@@ -236,6 +236,12 @@ h3 {
   color: var(--muted);
 }
 
+#gradeLine {
+  letter-spacing: 0.02em;
+  font-variant-numeric: tabular-nums;
+  color: #1f2937;
+}
+
 .action-row {
   display: grid;
   grid-template-columns: 1fr 1fr;

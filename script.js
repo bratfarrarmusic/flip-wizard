@@ -4,6 +4,7 @@ const LEADERBOARD_KEY = "flipWizardLeaderboardV2";
 const LEADERBOARD_LIMIT = 5;
 const CARDS_PER_ROUND = 10;
 const GENERIC_RECORD_IMAGE = "images/record-placeholder.jpg";
+const TARGET_PROFIT = 20;
 
 const SCREEN = {
   HOME: "home",
@@ -18,44 +19,44 @@ const ROUND_CONFIG = [
     key: "local-op-shop",
     title: "Round One: Local Op-Shop",
     eyebrow: "Round One",
-    announcementText: "These are all records in VG+/VG+.\nCan you flip them?\n3–2–1 GO!",
+    announcementText: "Records use Goldmine Record/Sleeve grading.\nCondition affects value and is built into pricing.\nCall it: can you buy this and still clear a $20 profit?\n3–2–1 GO!",
     cardCount: CARDS_PER_ROUND,
   },
   {
     key: "sunday-market",
     title: "Round Two: Sunday Market",
     eyebrow: "Round Two",
-    announcementText: "Fresh crates, mixed sellers, more price chaos.\nCan you still spot the flips?\n3–2–1 GO!",
+    announcementText: "Fresh crates, mixed sellers, and more price chaos.\nYour target stays the same: spot buys that can clear at least $20 profit.\n3–2–1 GO!",
     cardCount: CARDS_PER_ROUND,
   },
 ];
 
 const recordPool = [
-  { artist: "Nirvana", title: "In Utero", imageLabel: "Nirvana\nIn Utero", rounds: ["local-op-shop"], minPrice: 8, maxPrice: 26, flipThreshold: 15 },
-  { artist: "The Beatles", title: "Abbey Road", imageLabel: "The Beatles\nAbbey Road", rounds: ["local-op-shop"], minPrice: 12, maxPrice: 40, flipThreshold: 24 },
-  { artist: "David Bowie", title: "Heroes", imageLabel: "David Bowie\nHeroes", rounds: ["local-op-shop"], minPrice: 6, maxPrice: 24, flipThreshold: 14 },
-  { artist: "Fleetwood Mac", title: "Rumours", imageLabel: "Fleetwood Mac\nRumours", rounds: ["local-op-shop", "sunday-market"], minPrice: 5, maxPrice: 28, flipThreshold: 15 },
-  { artist: "Pink Floyd", title: "The Wall", imageLabel: "Pink Floyd\nThe Wall", rounds: ["local-op-shop", "sunday-market"], minPrice: 12, maxPrice: 38, flipThreshold: 21 },
-  { artist: "Radiohead", title: "OK Computer", imageLabel: "Radiohead\nOK Computer", rounds: ["local-op-shop"], minPrice: 9, maxPrice: 30, flipThreshold: 18 },
-  { artist: "Queen", title: "Greatest Hits", imageLabel: "Queen\nGreatest Hits", rounds: ["local-op-shop"], minPrice: 10, maxPrice: 34, flipThreshold: 19 },
-  { artist: "Joy Division", title: "Unknown Pleasures", imageLabel: "Joy Division\nUnknown Pleasures", rounds: ["local-op-shop"], minPrice: 7, maxPrice: 29, flipThreshold: 17 },
-  { artist: "Bob Dylan", title: "Highway 61 Revisited", imageLabel: "Bob Dylan\nHighway 61", rounds: ["local-op-shop"], minPrice: 8, maxPrice: 27, flipThreshold: 16 },
-  { artist: "Eagles", title: "Hotel California", imageLabel: "Eagles\nHotel California", rounds: ["local-op-shop"], minPrice: 9, maxPrice: 32, flipThreshold: 17 },
-  { artist: "The Rolling Stones", title: "Sticky Fingers", imageLabel: "Rolling Stones\nSticky Fingers", rounds: ["local-op-shop"], minPrice: 10, maxPrice: 35, flipThreshold: 19 },
-  { artist: "Michael Jackson", title: "Thriller", imageLabel: "Michael Jackson\nThriller", rounds: ["local-op-shop", "sunday-market"], minPrice: 7, maxPrice: 31, flipThreshold: 16 },
+  { artist: "Nirvana", title: "In Utero", imageLabel: "Nirvana\nIn Utero", rounds: ["local-op-shop"], minPrice: 8, maxPrice: 26, baseValueMintOrReference: 49 },
+  { artist: "The Beatles", title: "Abbey Road", imageLabel: "The Beatles\nAbbey Road", rounds: ["local-op-shop"], minPrice: 12, maxPrice: 40, baseValueMintOrReference: 68 },
+  { artist: "David Bowie", title: "Heroes", imageLabel: "David Bowie\nHeroes", rounds: ["local-op-shop"], minPrice: 6, maxPrice: 24, baseValueMintOrReference: 44 },
+  { artist: "Fleetwood Mac", title: "Rumours", imageLabel: "Fleetwood Mac\nRumours", rounds: ["local-op-shop", "sunday-market"], minPrice: 5, maxPrice: 28, baseValueMintOrReference: 46 },
+  { artist: "Pink Floyd", title: "The Wall", imageLabel: "Pink Floyd\nThe Wall", rounds: ["local-op-shop", "sunday-market"], minPrice: 12, maxPrice: 38, baseValueMintOrReference: 59 },
+  { artist: "Radiohead", title: "OK Computer", imageLabel: "Radiohead\nOK Computer", rounds: ["local-op-shop"], minPrice: 9, maxPrice: 30, baseValueMintOrReference: 53 },
+  { artist: "Queen", title: "Greatest Hits", imageLabel: "Queen\nGreatest Hits", rounds: ["local-op-shop"], minPrice: 10, maxPrice: 34, baseValueMintOrReference: 52 },
+  { artist: "Joy Division", title: "Unknown Pleasures", imageLabel: "Joy Division\nUnknown Pleasures", rounds: ["local-op-shop"], minPrice: 7, maxPrice: 29, baseValueMintOrReference: 50 },
+  { artist: "Bob Dylan", title: "Highway 61 Revisited", imageLabel: "Bob Dylan\nHighway 61", rounds: ["local-op-shop"], minPrice: 8, maxPrice: 27, baseValueMintOrReference: 48 },
+  { artist: "Eagles", title: "Hotel California", imageLabel: "Eagles\nHotel California", rounds: ["local-op-shop"], minPrice: 9, maxPrice: 32, baseValueMintOrReference: 47 },
+  { artist: "The Rolling Stones", title: "Sticky Fingers", imageLabel: "Rolling Stones\nSticky Fingers", rounds: ["local-op-shop"], minPrice: 10, maxPrice: 35, baseValueMintOrReference: 54 },
+  { artist: "Michael Jackson", title: "Thriller", imageLabel: "Michael Jackson\nThriller", rounds: ["local-op-shop", "sunday-market"], minPrice: 7, maxPrice: 31, baseValueMintOrReference: 49 },
 
-  { artist: "Bruce Springsteen", title: "Born to Run", imageLabel: "Bruce Springsteen\nBorn to Run", rounds: ["sunday-market"], minPrice: 8, maxPrice: 30, flipThreshold: 17 },
-  { artist: "Talking Heads", title: "Remain in Light", imageLabel: "Talking Heads\nRemain in Light", rounds: ["sunday-market"], minPrice: 9, maxPrice: 32, flipThreshold: 18 },
-  { artist: "The Clash", title: "London Calling", imageLabel: "The Clash\nLondon Calling", rounds: ["sunday-market"], minPrice: 10, maxPrice: 36, flipThreshold: 20 },
-  { artist: "Prince", title: "Purple Rain", imageLabel: "Prince\nPurple Rain", rounds: ["sunday-market"], minPrice: 7, maxPrice: 30, flipThreshold: 17 },
-  { artist: "Lou Reed", title: "Transformer", imageLabel: "Lou Reed\nTransformer", rounds: ["sunday-market"], minPrice: 8, maxPrice: 28, flipThreshold: 16 },
-  { artist: "Patti Smith", title: "Horses", imageLabel: "Patti Smith\nHorses", rounds: ["sunday-market"], minPrice: 8, maxPrice: 31, flipThreshold: 17 },
-  { artist: "AC/DC", title: "Back in Black", imageLabel: "AC/DC\nBack in Black", rounds: ["sunday-market"], minPrice: 7, maxPrice: 29, flipThreshold: 15 },
-  { artist: "Led Zeppelin", title: "IV", imageLabel: "Led Zeppelin\nIV", rounds: ["sunday-market"], minPrice: 9, maxPrice: 34, flipThreshold: 18 },
-  { artist: "Neil Young", title: "Harvest", imageLabel: "Neil Young\nHarvest", rounds: ["sunday-market"], minPrice: 8, maxPrice: 30, flipThreshold: 16 },
-  { artist: "Simon & Garfunkel", title: "Bridge Over Troubled Water", imageLabel: "Simon & Garfunkel\nBridge Over Troubled Water", rounds: ["sunday-market"], minPrice: 8, maxPrice: 27, flipThreshold: 15 },
-  { artist: "U2", title: "The Joshua Tree", imageLabel: "U2\nThe Joshua Tree", rounds: ["sunday-market"], minPrice: 9, maxPrice: 31, flipThreshold: 18 },
-  { artist: "The Cure", title: "Disintegration", imageLabel: "The Cure\nDisintegration", rounds: ["sunday-market"], minPrice: 10, maxPrice: 33, flipThreshold: 19 },
+  { artist: "Bruce Springsteen", title: "Born to Run", imageLabel: "Bruce Springsteen\nBorn to Run", rounds: ["sunday-market"], minPrice: 8, maxPrice: 30, baseValueMintOrReference: 50 },
+  { artist: "Talking Heads", title: "Remain in Light", imageLabel: "Talking Heads\nRemain in Light", rounds: ["sunday-market"], minPrice: 9, maxPrice: 32, baseValueMintOrReference: 53 },
+  { artist: "The Clash", title: "London Calling", imageLabel: "The Clash\nLondon Calling", rounds: ["sunday-market"], minPrice: 10, maxPrice: 36, baseValueMintOrReference: 55 },
+  { artist: "Prince", title: "Purple Rain", imageLabel: "Prince\nPurple Rain", rounds: ["sunday-market"], minPrice: 7, maxPrice: 30, baseValueMintOrReference: 48 },
+  { artist: "Lou Reed", title: "Transformer", imageLabel: "Lou Reed\nTransformer", rounds: ["sunday-market"], minPrice: 8, maxPrice: 28, baseValueMintOrReference: 47 },
+  { artist: "Patti Smith", title: "Horses", imageLabel: "Patti Smith\nHorses", rounds: ["sunday-market"], minPrice: 8, maxPrice: 31, baseValueMintOrReference: 51 },
+  { artist: "AC/DC", title: "Back in Black", imageLabel: "AC/DC\nBack in Black", rounds: ["sunday-market"], minPrice: 7, maxPrice: 29, baseValueMintOrReference: 45 },
+  { artist: "Led Zeppelin", title: "IV", imageLabel: "Led Zeppelin\nIV", rounds: ["sunday-market"], minPrice: 9, maxPrice: 34, baseValueMintOrReference: 52 },
+  { artist: "Neil Young", title: "Harvest", imageLabel: "Neil Young\nHarvest", rounds: ["sunday-market"], minPrice: 8, maxPrice: 30, baseValueMintOrReference: 47 },
+  { artist: "Simon & Garfunkel", title: "Bridge Over Troubled Water", imageLabel: "Simon & Garfunkel\nBridge Over Troubled Water", rounds: ["sunday-market"], minPrice: 8, maxPrice: 27, baseValueMintOrReference: 46 },
+  { artist: "U2", title: "The Joshua Tree", imageLabel: "U2\nThe Joshua Tree", rounds: ["sunday-market"], minPrice: 9, maxPrice: 31, baseValueMintOrReference: 50 },
+  { artist: "The Cure", title: "Disintegration", imageLabel: "The Cure\nDisintegration", rounds: ["sunday-market"], minPrice: 10, maxPrice: 33, baseValueMintOrReference: 53 },
 ];
 
 const introSection = document.getElementById("intro");
@@ -85,6 +86,7 @@ const timerText = document.getElementById("timer");
 const artistText = document.getElementById("artist");
 const titleText = document.getElementById("title");
 const buyPriceText = document.getElementById("buyPrice");
+const gradeLineText = document.getElementById("gradeLine");
 const tileArtist = document.getElementById("tileArtist");
 const tileTitle = document.getElementById("tileTitle");
 const albumTile = document.getElementById("albumTile");
@@ -183,16 +185,57 @@ function selectRandomRecords(pool, count) {
 }
 
 function createRuntimeCard(record) {
+  const { recordGrade, sleeveGrade } = generateCardGrades();
+  const adjustedResaleValue = adjustResaleValueByGrade(record.baseValueMintOrReference, recordGrade, sleeveGrade);
   const generatedPrice = generateDisplayedPrice(record.minPrice, record.maxPrice);
-  const correctAnswer = computeCorrectAnswer(generatedPrice, record.flipThreshold);
+  const expectedProfit = Math.round(adjustedResaleValue - generatedPrice);
+  const correctAnswer = computeCorrectAnswer(expectedProfit, TARGET_PROFIT);
 
   return {
     ...record,
+    recordGrade,
+    sleeveGrade,
+    gradeLine: renderGradeLine(recordGrade, sleeveGrade),
     generatedPrice,
     buyPriceText: `$${generatedPrice}`,
+    adjustedResaleValue,
+    expectedProfit,
     correctAnswer,
     coverImageSrc: GENERIC_RECORD_IMAGE,
   };
+}
+
+function generateCardGrades() {
+  const gradePool = ["G+", "VG", "VG+", "EX"];
+  return {
+    recordGrade: gradePool[Math.floor(Math.random() * gradePool.length)],
+    sleeveGrade: gradePool[Math.floor(Math.random() * gradePool.length)],
+  };
+}
+
+function adjustResaleValueByGrade(baseValueMintOrReference, recordGrade, sleeveGrade) {
+  const recordMultipliers = {
+    "G+": 0.58,
+    VG: 0.72,
+    "VG+": 0.86,
+    EX: 0.95,
+  };
+
+  const sleeveMultipliers = {
+    "G+": 0.92,
+    VG: 0.97,
+    "VG+": 1,
+    EX: 1.04,
+  };
+
+  const recordMultiplier = recordMultipliers[recordGrade] || 0.72;
+  const sleeveMultiplier = sleeveMultipliers[sleeveGrade] || 1;
+  const adjustedValue = baseValueMintOrReference * recordMultiplier * sleeveMultiplier;
+  return Math.round(adjustedValue);
+}
+
+function renderGradeLine(recordGrade, sleeveGrade) {
+  return `${recordGrade}/${sleeveGrade}`;
 }
 
 function generateDisplayedPrice(minPrice, maxPrice) {
@@ -201,8 +244,8 @@ function generateDisplayedPrice(minPrice, maxPrice) {
   return Math.floor(Math.random() * (high - low + 1)) + low;
 }
 
-function computeCorrectAnswer(generatedPrice, flipThreshold) {
-  return generatedPrice <= flipThreshold ? "Yes" : "No";
+function computeCorrectAnswer(expectedProfit, targetProfit) {
+  return expectedProfit >= targetProfit ? "Yes" : "No";
 }
 
 function startRound(roundIndex) {
@@ -234,6 +277,7 @@ function renderCurrentCard() {
   artistText.textContent = record.artist;
   titleText.textContent = record.title;
   buyPriceText.textContent = record.buyPriceText;
+  gradeLineText.textContent = record.gradeLine;
   tileArtist.textContent = artistLabel || record.artist;
   tileTitle.textContent = titleLabel || record.title;
 
@@ -409,14 +453,14 @@ function getRatingLine(points) {
 
 function getSummaryLine(points) {
   if (points <= 350) {
-    return "You survived both rounds. Next run, trust your gut on borderline prices.";
+    return "You survived both rounds. Next run, hunt for buys that can still clear $20 profit.";
   }
 
   if (points <= 900) {
-    return "Great pace and sharp calls. You found strong flips across both spots.";
+    return "Great pace and sharp calls. You spotted plenty of records with $20+ margin.";
   }
 
-  return "Outstanding two-round run. You read the market like a veteran flipper.";
+  return "Outstanding two-round run. You consistently found buys that clear a $20+ margin.";
 }
 
 function getPlayerName() {
