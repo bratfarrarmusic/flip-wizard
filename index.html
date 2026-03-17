@@ -7,17 +7,56 @@
     <link rel="stylesheet" href="style.css" />
   </head>
   <body>
-    <h1>Flip Wizard</h1>
-    <p>Welcome to Flip Wizard. Can you make a flip on all these items?</p>
+    <main class="app-shell">
+      <h1>Flip Wizard</h1>
 
-    <div id="game">
-      <h2>Round One</h2>
-      <p>
-        Look at the record and the information shown, then choose Yes or No to
-        decide whether it is a profitable flip.
-      </p>
-      <button id="startBtn">Start Game</button>
-    </div>
+      <section id="intro" class="panel">
+        <p>Welcome to Flip Wizard. Can you make a flip on all these items?</p>
+        <h2>Round One</h2>
+        <p>
+          Look at the record and the buy price, then choose Yes or No to decide
+          whether it is a profitable flip.
+        </p>
+        <button id="startBtn" class="primary-btn">Start Game</button>
+      </section>
+
+      <section id="game" class="panel hidden" aria-live="polite">
+        <div class="status-row">
+          <p id="cardCount" class="pill"></p>
+          <p id="score" class="pill"></p>
+        </div>
+
+        <div id="albumTile" class="album-tile" role="img" aria-label="Album cover">
+          <span id="tileArtist" class="tile-artist"></span>
+          <span id="tileTitle" class="tile-title"></span>
+        </div>
+
+        <div class="record-meta">
+          <p><strong>Artist:</strong> <span id="artist"></span></p>
+          <p><strong>Title:</strong> <span id="title"></span></p>
+          <p><strong>Buy Price:</strong> <span id="buyPrice"></span></p>
+        </div>
+
+        <div class="action-row">
+          <button id="yesBtn" class="answer-btn yes">Yes</button>
+          <button id="noBtn" class="answer-btn no">No</button>
+        </div>
+
+        <div id="feedback" class="feedback hidden">
+          <p id="feedbackText"></p>
+          <p id="reasonText" class="reason"></p>
+        </div>
+
+        <button id="nextBtn" class="primary-btn hidden">Next</button>
+      </section>
+
+      <section id="result" class="panel hidden" aria-live="polite">
+        <h2>Round Complete</h2>
+        <p id="finalScore"></p>
+        <p id="rating"></p>
+        <button id="playAgainBtn" class="primary-btn">Play Again</button>
+      </section>
+    </main>
 
     <script src="script.js"></script>
   </body>
