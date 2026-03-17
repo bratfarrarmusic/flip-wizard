@@ -2,62 +2,80 @@ const ROUND_SECONDS = 10;
 const NEXT_CARD_DELAY_MS = 120;
 const LEADERBOARD_KEY = "flipWizardLeaderboardV2";
 const LEADERBOARD_LIMIT = 5;
-const CARDS_PER_ROUND = 5;
+const CARDS_PER_ROUND = 10;
+const GENERIC_RECORD_IMAGE = "images/record-placeholder.jpg";
+
+const SCREEN = {
+  HOME: "home",
+  ROUND_ANNOUNCEMENT: "round_announcement",
+  GAMEPLAY: "gameplay",
+  BETWEEN_ROUND_AD: "between_round_ad",
+  END: "end",
+};
 
 const ROUND_CONFIG = [
   {
     key: "local-op-shop",
     title: "Round One: Local Op-Shop",
+    eyebrow: "Round One",
+    announcementText: "These are all records in VG+/VG+.\nCan you flip them?\n3–2–1 GO!",
     cardCount: CARDS_PER_ROUND,
   },
   {
     key: "sunday-market",
     title: "Round Two: Sunday Market",
+    eyebrow: "Round Two",
+    announcementText: "Fresh crates, mixed sellers, more price chaos.\nCan you still spot the flips?\n3–2–1 GO!",
     cardCount: CARDS_PER_ROUND,
   },
 ];
 
 const recordPool = [
-  { artist: "Nirvana", title: "In Utero", imageSrc: "images/in-utero.jpg", imageLabel: "Nirvana\nIn Utero", rounds: ["local-op-shop"], minPrice: 8, maxPrice: 26, flipThreshold: 15 },
-  { artist: "The Beatles", title: "Abbey Road", imageSrc: "images/abbey-road.jpg", imageLabel: "The Beatles\nAbbey Road", rounds: ["local-op-shop"], minPrice: 12, maxPrice: 40, flipThreshold: 24 },
-  { artist: "David Bowie", title: "Heroes", imageSrc: "images/heroes.jpg", imageLabel: "David Bowie\nHeroes", rounds: ["local-op-shop"], minPrice: 6, maxPrice: 24, flipThreshold: 14 },
-  { artist: "Fleetwood Mac", title: "Rumours", imageSrc: "images/rumours.jpg", imageLabel: "Fleetwood Mac\nRumours", rounds: ["local-op-shop", "sunday-market"], minPrice: 5, maxPrice: 28, flipThreshold: 15 },
-  { artist: "Pink Floyd", title: "The Wall", imageSrc: "images/the-wall.jpg", imageLabel: "Pink Floyd\nThe Wall", rounds: ["local-op-shop", "sunday-market"], minPrice: 12, maxPrice: 38, flipThreshold: 21 },
-  { artist: "Radiohead", title: "OK Computer", imageSrc: "images/ok-computer.jpg", imageLabel: "Radiohead\nOK Computer", rounds: ["local-op-shop"], minPrice: 9, maxPrice: 30, flipThreshold: 18 },
-  { artist: "Queen", title: "Greatest Hits", imageSrc: "images/queen-greatest-hits.jpg", imageLabel: "Queen\nGreatest Hits", rounds: ["local-op-shop"], minPrice: 10, maxPrice: 34, flipThreshold: 19 },
-  { artist: "Joy Division", title: "Unknown Pleasures", imageSrc: "images/unknown-pleasures.jpg", imageLabel: "Joy Division\nUnknown Pleasures", rounds: ["local-op-shop"], minPrice: 7, maxPrice: 29, flipThreshold: 17 },
-  { artist: "Bob Dylan", title: "Highway 61 Revisited", imageSrc: "images/highway-61.jpg", imageLabel: "Bob Dylan\nHighway 61", rounds: ["local-op-shop"], minPrice: 8, maxPrice: 27, flipThreshold: 16 },
-  { artist: "Eagles", title: "Hotel California", imageSrc: "images/hotel-california.jpg", imageLabel: "Eagles\nHotel California", rounds: ["local-op-shop"], minPrice: 9, maxPrice: 32, flipThreshold: 17 },
-  { artist: "The Rolling Stones", title: "Sticky Fingers", imageSrc: "images/sticky-fingers.jpg", imageLabel: "Rolling Stones\nSticky Fingers", rounds: ["local-op-shop"], minPrice: 10, maxPrice: 35, flipThreshold: 19 },
-  { artist: "Michael Jackson", title: "Thriller", imageSrc: "images/thriller.jpg", imageLabel: "Michael Jackson\nThriller", rounds: ["local-op-shop", "sunday-market"], minPrice: 7, maxPrice: 31, flipThreshold: 16 },
+  { artist: "Nirvana", title: "In Utero", imageLabel: "Nirvana\nIn Utero", rounds: ["local-op-shop"], minPrice: 8, maxPrice: 26, flipThreshold: 15 },
+  { artist: "The Beatles", title: "Abbey Road", imageLabel: "The Beatles\nAbbey Road", rounds: ["local-op-shop"], minPrice: 12, maxPrice: 40, flipThreshold: 24 },
+  { artist: "David Bowie", title: "Heroes", imageLabel: "David Bowie\nHeroes", rounds: ["local-op-shop"], minPrice: 6, maxPrice: 24, flipThreshold: 14 },
+  { artist: "Fleetwood Mac", title: "Rumours", imageLabel: "Fleetwood Mac\nRumours", rounds: ["local-op-shop", "sunday-market"], minPrice: 5, maxPrice: 28, flipThreshold: 15 },
+  { artist: "Pink Floyd", title: "The Wall", imageLabel: "Pink Floyd\nThe Wall", rounds: ["local-op-shop", "sunday-market"], minPrice: 12, maxPrice: 38, flipThreshold: 21 },
+  { artist: "Radiohead", title: "OK Computer", imageLabel: "Radiohead\nOK Computer", rounds: ["local-op-shop"], minPrice: 9, maxPrice: 30, flipThreshold: 18 },
+  { artist: "Queen", title: "Greatest Hits", imageLabel: "Queen\nGreatest Hits", rounds: ["local-op-shop"], minPrice: 10, maxPrice: 34, flipThreshold: 19 },
+  { artist: "Joy Division", title: "Unknown Pleasures", imageLabel: "Joy Division\nUnknown Pleasures", rounds: ["local-op-shop"], minPrice: 7, maxPrice: 29, flipThreshold: 17 },
+  { artist: "Bob Dylan", title: "Highway 61 Revisited", imageLabel: "Bob Dylan\nHighway 61", rounds: ["local-op-shop"], minPrice: 8, maxPrice: 27, flipThreshold: 16 },
+  { artist: "Eagles", title: "Hotel California", imageLabel: "Eagles\nHotel California", rounds: ["local-op-shop"], minPrice: 9, maxPrice: 32, flipThreshold: 17 },
+  { artist: "The Rolling Stones", title: "Sticky Fingers", imageLabel: "Rolling Stones\nSticky Fingers", rounds: ["local-op-shop"], minPrice: 10, maxPrice: 35, flipThreshold: 19 },
+  { artist: "Michael Jackson", title: "Thriller", imageLabel: "Michael Jackson\nThriller", rounds: ["local-op-shop", "sunday-market"], minPrice: 7, maxPrice: 31, flipThreshold: 16 },
 
-  { artist: "Bruce Springsteen", title: "Born to Run", imageSrc: "images/born-to-run.jpg", imageLabel: "Bruce Springsteen\nBorn to Run", rounds: ["sunday-market"], minPrice: 8, maxPrice: 30, flipThreshold: 17 },
-  { artist: "Talking Heads", title: "Remain in Light", imageSrc: "images/remain-in-light.jpg", imageLabel: "Talking Heads\nRemain in Light", rounds: ["sunday-market"], minPrice: 9, maxPrice: 32, flipThreshold: 18 },
-  { artist: "The Clash", title: "London Calling", imageSrc: "images/london-calling.jpg", imageLabel: "The Clash\nLondon Calling", rounds: ["sunday-market"], minPrice: 10, maxPrice: 36, flipThreshold: 20 },
-  { artist: "Prince", title: "Purple Rain", imageSrc: "images/purple-rain.jpg", imageLabel: "Prince\nPurple Rain", rounds: ["sunday-market"], minPrice: 7, maxPrice: 30, flipThreshold: 17 },
-  { artist: "Lou Reed", title: "Transformer", imageSrc: "images/transformer.jpg", imageLabel: "Lou Reed\nTransformer", rounds: ["sunday-market"], minPrice: 8, maxPrice: 28, flipThreshold: 16 },
-  { artist: "Patti Smith", title: "Horses", imageSrc: "images/horses.jpg", imageLabel: "Patti Smith\nHorses", rounds: ["sunday-market"], minPrice: 8, maxPrice: 31, flipThreshold: 17 },
-  { artist: "AC/DC", title: "Back in Black", imageSrc: "images/back-in-black.jpg", imageLabel: "AC/DC\nBack in Black", rounds: ["sunday-market"], minPrice: 7, maxPrice: 29, flipThreshold: 15 },
-  { artist: "Led Zeppelin", title: "IV", imageSrc: "images/led-zeppelin-iv.jpg", imageLabel: "Led Zeppelin\nIV", rounds: ["sunday-market"], minPrice: 9, maxPrice: 34, flipThreshold: 18 },
-  { artist: "Neil Young", title: "Harvest", imageSrc: "images/harvest.jpg", imageLabel: "Neil Young\nHarvest", rounds: ["sunday-market"], minPrice: 8, maxPrice: 30, flipThreshold: 16 },
-  { artist: "Simon & Garfunkel", title: "Bridge Over Troubled Water", imageSrc: "images/bridge-over-troubled-water.jpg", imageLabel: "Simon & Garfunkel\nBridge Over Troubled Water", rounds: ["sunday-market"], minPrice: 8, maxPrice: 27, flipThreshold: 15 },
-  { artist: "U2", title: "The Joshua Tree", imageSrc: "images/joshua-tree.jpg", imageLabel: "U2\nThe Joshua Tree", rounds: ["sunday-market"], minPrice: 9, maxPrice: 31, flipThreshold: 18 },
-  { artist: "The Cure", title: "Disintegration", imageSrc: "images/disintegration.jpg", imageLabel: "The Cure\nDisintegration", rounds: ["sunday-market"], minPrice: 10, maxPrice: 33, flipThreshold: 19 },
+  { artist: "Bruce Springsteen", title: "Born to Run", imageLabel: "Bruce Springsteen\nBorn to Run", rounds: ["sunday-market"], minPrice: 8, maxPrice: 30, flipThreshold: 17 },
+  { artist: "Talking Heads", title: "Remain in Light", imageLabel: "Talking Heads\nRemain in Light", rounds: ["sunday-market"], minPrice: 9, maxPrice: 32, flipThreshold: 18 },
+  { artist: "The Clash", title: "London Calling", imageLabel: "The Clash\nLondon Calling", rounds: ["sunday-market"], minPrice: 10, maxPrice: 36, flipThreshold: 20 },
+  { artist: "Prince", title: "Purple Rain", imageLabel: "Prince\nPurple Rain", rounds: ["sunday-market"], minPrice: 7, maxPrice: 30, flipThreshold: 17 },
+  { artist: "Lou Reed", title: "Transformer", imageLabel: "Lou Reed\nTransformer", rounds: ["sunday-market"], minPrice: 8, maxPrice: 28, flipThreshold: 16 },
+  { artist: "Patti Smith", title: "Horses", imageLabel: "Patti Smith\nHorses", rounds: ["sunday-market"], minPrice: 8, maxPrice: 31, flipThreshold: 17 },
+  { artist: "AC/DC", title: "Back in Black", imageLabel: "AC/DC\nBack in Black", rounds: ["sunday-market"], minPrice: 7, maxPrice: 29, flipThreshold: 15 },
+  { artist: "Led Zeppelin", title: "IV", imageLabel: "Led Zeppelin\nIV", rounds: ["sunday-market"], minPrice: 9, maxPrice: 34, flipThreshold: 18 },
+  { artist: "Neil Young", title: "Harvest", imageLabel: "Neil Young\nHarvest", rounds: ["sunday-market"], minPrice: 8, maxPrice: 30, flipThreshold: 16 },
+  { artist: "Simon & Garfunkel", title: "Bridge Over Troubled Water", imageLabel: "Simon & Garfunkel\nBridge Over Troubled Water", rounds: ["sunday-market"], minPrice: 8, maxPrice: 27, flipThreshold: 15 },
+  { artist: "U2", title: "The Joshua Tree", imageLabel: "U2\nThe Joshua Tree", rounds: ["sunday-market"], minPrice: 9, maxPrice: 31, flipThreshold: 18 },
+  { artist: "The Cure", title: "Disintegration", imageLabel: "The Cure\nDisintegration", rounds: ["sunday-market"], minPrice: 10, maxPrice: 33, flipThreshold: 19 },
 ];
 
 const introSection = document.getElementById("intro");
+const roundAnnouncementSection = document.getElementById("roundAnnouncement");
 const gameSection = document.getElementById("game");
 const resultSection = document.getElementById("result");
 const betweenRoundInterstitial = document.getElementById("betweenRoundInterstitial");
 
 const playerNameInput = document.getElementById("playerName");
 const startBtn = document.getElementById("startBtn");
+const startRoundBtn = document.getElementById("startRoundBtn");
 const yesBtn = document.getElementById("yesBtn");
 const noBtn = document.getElementById("noBtn");
 const playAgainBtn = document.getElementById("playAgainBtn");
 const clearLeaderboardBtn = document.getElementById("clearLeaderboardBtn");
 const continueRoundBtn = document.getElementById("continueRoundBtn");
 
+const announcementEyebrow = document.getElementById("announcementEyebrow");
+const announcementTitle = document.getElementById("announcementTitle");
+const announcementBody = document.getElementById("announcementBody");
 const roundLabel = document.getElementById("roundLabel");
 const cardCount = document.getElementById("cardCount");
 const totalProgress = document.getElementById("totalProgress");
@@ -72,6 +90,8 @@ const tileTitle = document.getElementById("tileTitle");
 const albumTile = document.getElementById("albumTile");
 const coverImage = document.getElementById("coverImage");
 const coverFallback = document.getElementById("coverFallback");
+const homeHeroImage = document.getElementById("homeHeroImage");
+const homeHeroFallback = document.getElementById("homeHeroFallback");
 
 const finalScore = document.getElementById("finalScore");
 const finalPlayer = document.getElementById("finalPlayer");
@@ -80,8 +100,10 @@ const rating = document.getElementById("rating");
 const introLeaderboard = document.getElementById("introLeaderboard");
 const resultLeaderboard = document.getElementById("resultLeaderboard");
 
+let currentScreen = SCREEN.HOME;
 let rounds = [];
 let currentRoundIndex = 0;
+let pendingAnnouncementRoundIndex = 0;
 let currentCard = 0;
 let totalCardIndex = 0;
 let score = 0;
@@ -93,17 +115,34 @@ let cardStartedAt = 0;
 let timerInterval = null;
 let pendingTransitionTimeout = null;
 
+function renderScreen(screen) {
+  currentScreen = screen;
+  introSection.classList.toggle("hidden", screen !== SCREEN.HOME);
+  roundAnnouncementSection.classList.toggle("hidden", screen !== SCREEN.ROUND_ANNOUNCEMENT);
+  gameSection.classList.toggle("hidden", screen !== SCREEN.GAMEPLAY);
+  betweenRoundInterstitial.classList.toggle("hidden", screen !== SCREEN.BETWEEN_ROUND_AD);
+  resultSection.classList.toggle("hidden", screen !== SCREEN.END);
+}
+
 function startNewGame() {
   resetGameState();
-  rounds = prepareRoundPools();
   playerName = getPlayerName();
+  rounds = prepareRoundPools();
+  showRoundAnnouncement(0);
+}
 
-  introSection.classList.add("hidden");
-  resultSection.classList.add("hidden");
-  betweenRoundInterstitial.classList.add("hidden");
-  gameSection.classList.remove("hidden");
+function showRoundAnnouncement(roundIndex) {
+  const round = ROUND_CONFIG[roundIndex];
+  pendingAnnouncementRoundIndex = roundIndex;
+  announcementEyebrow.textContent = round.eyebrow;
+  announcementTitle.textContent = round.title;
+  announcementBody.textContent = round.announcementText;
+  startRoundBtn.textContent = "Start Round";
+  renderScreen(SCREEN.ROUND_ANNOUNCEMENT);
+}
 
-  startRound(0);
+function beginAnnouncedRound() {
+  startRound(pendingAnnouncementRoundIndex);
 }
 
 function prepareRoundPools() {
@@ -111,6 +150,11 @@ function prepareRoundPools() {
 
   return ROUND_CONFIG.map((round) => {
     const candidates = recordPool.filter((record) => record.rounds.includes(round.key) && !usedIds.has(getRecordId(record)));
+
+    if (candidates.length < round.cardCount) {
+      throw new Error(`Not enough records configured for ${round.key}.`);
+    }
+
     const selected = selectRandomRecords(candidates, round.cardCount).map((record) => createRuntimeCard(record));
 
     selected.forEach((record) => {
@@ -147,6 +191,7 @@ function createRuntimeCard(record) {
     generatedPrice,
     buyPriceText: `$${generatedPrice}`,
     correctAnswer,
+    coverImageSrc: GENERIC_RECORD_IMAGE,
   };
 }
 
@@ -163,6 +208,7 @@ function computeCorrectAnswer(generatedPrice, flipThreshold) {
 function startRound(roundIndex) {
   currentRoundIndex = roundIndex;
   currentCard = 0;
+  renderScreen(SCREEN.GAMEPLAY);
   renderCurrentCard();
 }
 
@@ -207,7 +253,7 @@ function setCoverImage(record) {
   coverFallback.classList.remove("hidden");
   albumTile.setAttribute("aria-label", `${record.artist} ${record.title} cover`);
 
-  if (!record.imageSrc) {
+  if (!record.coverImageSrc) {
     return;
   }
 
@@ -219,16 +265,16 @@ function setCoverImage(record) {
     coverFallback.classList.remove("hidden");
   };
 
-  coverImage.src = record.imageSrc;
+  coverImage.src = record.coverImageSrc;
 }
 
 function preloadRecordImage(record) {
-  if (!record || !record.imageSrc) {
+  if (!record || !record.coverImageSrc) {
     return;
   }
 
   const image = new Image();
-  image.src = record.imageSrc;
+  image.src = record.coverImageSrc;
 }
 
 function startCountdown() {
@@ -323,29 +369,20 @@ function handleRoundComplete() {
   stopCountdown();
 
   if (currentRoundIndex === 0) {
-    showBetweenRoundInterstitial();
+    renderScreen(SCREEN.BETWEEN_ROUND_AD);
     return;
   }
 
   endGame();
 }
 
-function showBetweenRoundInterstitial() {
-  gameSection.classList.add("hidden");
-  betweenRoundInterstitial.classList.remove("hidden");
-}
-
-function startNextRound() {
-  betweenRoundInterstitial.classList.add("hidden");
-  gameSection.classList.remove("hidden");
-  startRound(currentRoundIndex + 1);
+function continueAfterInterstitial() {
+  showRoundAnnouncement(1);
 }
 
 function endGame() {
   stopCountdown();
-  gameSection.classList.add("hidden");
-  betweenRoundInterstitial.classList.add("hidden");
-  resultSection.classList.remove("hidden");
+  renderScreen(SCREEN.END);
 
   const roundedScore = Math.round(score);
   saveLeaderboardEntry({ name: playerName, score: roundedScore, date: Date.now() });
@@ -441,17 +478,15 @@ function clearLeaderboard() {
 function resetGame() {
   stopCountdown();
   clearPendingTransition();
-  betweenRoundInterstitial.classList.add("hidden");
-  introSection.classList.remove("hidden");
-  gameSection.classList.add("hidden");
-  resultSection.classList.add("hidden");
   resetGameState();
+  renderScreen(SCREEN.HOME);
   renderLeaderboards();
 }
 
 function resetGameState() {
   rounds = [];
   currentRoundIndex = 0;
+  pendingAnnouncementRoundIndex = 0;
   currentCard = 0;
   totalCardIndex = 0;
   score = 0;
@@ -470,11 +505,24 @@ function clearPendingTransition() {
   }
 }
 
+function setupHomeHeroFallback() {
+  homeHeroImage.onload = () => {
+    homeHeroFallback.classList.add("hidden");
+  };
+
+  homeHeroImage.onerror = () => {
+    homeHeroFallback.classList.remove("hidden");
+  };
+}
+
 startBtn.addEventListener("click", startNewGame);
+startRoundBtn.addEventListener("click", beginAnnouncedRound);
 yesBtn.addEventListener("click", () => handleAnswer("Yes"));
 noBtn.addEventListener("click", () => handleAnswer("No"));
 playAgainBtn.addEventListener("click", resetGame);
 clearLeaderboardBtn.addEventListener("click", clearLeaderboard);
-continueRoundBtn.addEventListener("click", startNextRound);
+continueRoundBtn.addEventListener("click", continueAfterInterstitial);
 
+setupHomeHeroFallback();
+renderScreen(SCREEN.HOME);
 renderLeaderboards();
