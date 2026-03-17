@@ -14,7 +14,7 @@
         <div id="homeHero" class="home-hero" role="img" aria-label="Flip Wizard game preview">
           <img id="homeHeroImage" class="home-hero-image" alt="Flip Wizard landing hero" src="" />
           <div id="homeHeroFallback" class="home-hero-fallback" aria-hidden="true">
-            <p>Dig crates. Trust your gut. Build your score.</p>
+            <p>Dig crates. Trust your gut. Build your margin.</p>
           </div>
         </div>
 
@@ -22,6 +22,15 @@
 
         <label class="input-label" for="playerName">Enter your name</label>
         <input id="playerName" class="name-input" type="text" maxlength="20" placeholder="Anonymous" autocomplete="nickname" />
+
+        <label class="input-label" for="marketSelect">Which market do you wheel and deal in?</label>
+        <select id="marketSelect" class="name-input market-input">
+          <option value="au">eBay Australia</option>
+          <option value="us">eBay US</option>
+          <option value="uk">eBay UK</option>
+          <option value="eu">Germany / EU</option>
+        </select>
+
         <button id="startBtn" class="primary-btn">Start Game</button>
 
         <div class="leaderboard-panel compact">
@@ -36,7 +45,7 @@
         <p id="announcementEyebrow" class="eyebrow"></p>
         <h2 id="announcementTitle"></h2>
         <p id="announcementBody" class="announcement-body"></p>
-        <button id="startRoundBtn" class="primary-btn">Let's Go</button>
+        <button id="startRoundBtn" class="primary-btn">Drop the Needle</button>
       </section>
 
       <section id="game" class="panel hidden" aria-live="polite">
@@ -47,20 +56,6 @@
           </div>
         </div>
 
-        <div class="round-row">
-          <p id="roundLabel" class="round-pill"></p>
-        </div>
-
-        <div class="status-row expanded">
-          <p id="cardCount" class="pill"></p>
-          <p id="totalProgress" class="pill"></p>
-          <p id="timer" class="pill timer-pill"></p>
-          <p id="streak" class="pill"></p>
-          <p id="speedScore" class="pill"></p>
-          <p id="profitScore" class="pill"></p>
-          <p id="score" class="pill headline-pill"></p>
-        </div>
-
         <article id="recordCard" class="record-card">
           <div id="albumTile" class="album-tile" role="img" aria-label="Album cover">
             <img id="coverImage" class="cover-image" alt="Record cover" />
@@ -68,13 +63,14 @@
               <span id="tileArtist" class="tile-artist"></span>
               <span id="tileTitle" class="tile-title"></span>
             </div>
-          </div>
-
-          <div class="record-meta">
-            <p class="meta-item"><span>Artist</span><strong id="artist"></strong></p>
-            <p class="meta-item"><span>Title</span><strong id="title"></strong></p>
-            <p class="meta-item"><span>Condition</span><strong id="gradeLine"></strong></p>
-            <p class="meta-item"><span>Buy Price</span><strong id="buyPrice"></strong></p>
+            <div class="card-overlay">
+              <p id="artist" class="overlay-artist"></p>
+              <p id="title" class="overlay-title"></p>
+              <p id="gradeLine" class="overlay-detail"></p>
+              <p id="buyPrice" class="overlay-detail"></p>
+            </div>
+            <p id="roundLabel" class="corner-tag left"></p>
+            <p id="cardCount" class="corner-tag right"></p>
           </div>
 
           <div class="action-row">
@@ -82,8 +78,6 @@
             <button id="noBtn" class="answer-btn no">No</button>
           </div>
         </article>
-
-        <div id="scoreFeedback" class="score-feedback hidden" aria-live="polite"></div>
 
         <div id="bottomBannerAdSlot" class="ad-slot banner-slot" role="complementary" aria-label="Sponsored ad space">
           <div class="ad-copy-wrap">
@@ -96,9 +90,9 @@
       <section id="result" class="panel hidden" aria-live="polite">
         <h2>Run Complete</h2>
         <p id="finalPlayer" class="summary"></p>
-        <p id="finalSpeed" class="final-breakdown"></p>
-        <p id="finalProfit" class="final-breakdown"></p>
+        <p id="finalMarket" class="summary"></p>
         <p id="finalScore" class="final-score"></p>
+        <p id="finalProfit" class="final-breakdown"></p>
         <p id="rating" class="rating"></p>
         <p id="summary" class="summary"></p>
 
