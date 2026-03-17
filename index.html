@@ -11,9 +11,10 @@
       <h1>Flip Wizard</h1>
 
       <section id="intro" class="panel intro-panel">
-        <p class="eyebrow">Version 3</p>
-        <h2>Fast Record Flips</h2>
-        <p>Trust your instinct. Quick calls. Big score runs.</p>
+        <p class="eyebrow">Round One: Local Op-Shop</p>
+        <h2>Can You Flip Them?</h2>
+        <p>These are all records in VG+/VG+. Can you flip them?</p>
+        <p class="countdown-copy">3–2–1 GO!</p>
 
         <label class="input-label" for="playerName">Enter your name</label>
         <input id="playerName" class="name-input" type="text" maxlength="20" placeholder="Anonymous" autocomplete="nickname" />
@@ -28,8 +29,8 @@
       </section>
 
       <section id="game" class="panel hidden" aria-live="polite">
-        <div id="bannerAdSlot" class="ad-slot banner-slot" role="complementary" aria-label="Sponsored space">
-          <span class="ad-chip">Sponsored space</span>
+        <div class="round-row">
+          <p class="round-pill">Round One: Local Op-Shop</p>
         </div>
 
         <div class="status-row">
@@ -59,6 +60,13 @@
             <button id="noBtn" class="answer-btn no">No</button>
           </div>
         </article>
+
+        <div id="bannerAdSlot" class="ad-slot banner-slot" role="complementary" aria-label="Sponsored ad space">
+          <div class="ad-copy-wrap">
+            <span class="ad-chip">Sponsored</span>
+            <span class="ad-caption">Ad space</span>
+          </div>
+        </div>
       </section>
 
       <section id="result" class="panel hidden" aria-live="polite">
@@ -80,9 +88,12 @@
       </section>
     </main>
 
-    <div id="interstitial" class="interstitial hidden" aria-live="polite" role="status">
+    <div id="interstitial" class="interstitial hidden" aria-live="polite" role="status" aria-label="Sponsored transition space">
       <div id="interstitialAdSlot" class="ad-slot interstitial-slot">
-        <span class="ad-chip">Sponsored break</span>
+        <div class="ad-copy-wrap">
+          <span class="ad-chip">Sponsored</span>
+          <span class="ad-caption">Ad space</span>
+        </div>
       </div>
     </div>
 
