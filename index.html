@@ -11,10 +11,14 @@
       <h1>Flip Wizard</h1>
 
       <section id="intro" class="panel intro-panel">
-        <p class="eyebrow">Two rounds. Ten cards. One leaderboard.</p>
+        <div id="homeHero" class="home-hero" role="img" aria-label="Flip Wizard game preview">
+          <img id="homeHeroImage" class="home-hero-image" alt="Flip Wizard landing hero" src="images/home-hero.jpg" />
+          <div id="homeHeroFallback" class="home-hero-fallback hidden" aria-hidden="true">
+            <p>Dig crates. Trust your gut. Build your score.</p>
+          </div>
+        </div>
+
         <h2>Can You Flip Them?</h2>
-        <p><strong>Round One: Local Op-Shop</strong><br />These are all records in VG+/VG+. Can you flip them?<br />3–2–1 GO!</p>
-        <p><strong>Round Two: Sunday Market</strong><br />Fresh crates, mixed sellers, more price chaos.<br />Can you still spot the flips?<br />3–2–1 GO!</p>
 
         <label class="input-label" for="playerName">Enter your name</label>
         <input id="playerName" class="name-input" type="text" maxlength="20" placeholder="Anonymous" autocomplete="nickname" />
@@ -26,6 +30,13 @@
           </div>
           <ol id="introLeaderboard" class="leaderboard-list"></ol>
         </div>
+      </section>
+
+      <section id="roundAnnouncement" class="panel round-announcement hidden" aria-live="polite">
+        <p id="announcementEyebrow" class="eyebrow"></p>
+        <h2 id="announcementTitle"></h2>
+        <p id="announcementBody" class="announcement-body"></p>
+        <button id="startRoundBtn" class="primary-btn">Let's Go</button>
       </section>
 
       <section id="game" class="panel hidden" aria-live="polite">
@@ -99,8 +110,7 @@
     <section id="betweenRoundInterstitial" class="interstitial hidden" aria-live="polite" role="dialog" aria-label="Sponsored transition space">
       <div class="interstitial-card">
         <p class="eyebrow">Round One complete</p>
-        <h2>Round Two: Sunday Market</h2>
-        <p>Fresh crates, mixed sellers, more price chaos.<br />Can you still spot the flips?<br />3–2–1 GO!</p>
+        <h2>Sponsored Break</h2>
         <div id="interstitialAdSlot" class="ad-slot interstitial-slot">
           <div class="ad-copy-wrap">
             <span class="ad-chip">Sponsored</span>
