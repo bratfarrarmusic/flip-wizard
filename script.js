@@ -1,6 +1,6 @@
 const ROUND_SECONDS = 9;
 const NEXT_CARD_DELAY_MS = 350;
-const LEADERBOARD_KEY = "flipWizardLeaderboardV4";
+const LEADERBOARD_KEY = "flipWizardLeaderboardV5";
 const LEADERBOARD_LIMIT = 8;
 const CARDS_PER_ROUND = 8;
 const TARGET_PROFIT = 20;
@@ -23,7 +23,7 @@ const ROUND_CONFIG = [
     pricePressure: 0.94,
     variance: 0.13,
     gradeWeights: [0.17, 0.34, 0.31, 0.18],
-    announcementText: "Goldmine Record/Sleeve grading drives value.\nCondition changes what the market will really pay.\nYour call: flip only if you can clear at least $20 profit.",
+    announcementText: "All records are original presses.\nGoldmine Record/Sleeve grading affects value.\nYour call: flip only if you can clear at least $20 profit.",
   },
   {
     key: "round-two-sunday-market",
@@ -33,7 +33,7 @@ const ROUND_CONFIG = [
     pricePressure: 1.0,
     variance: 0.14,
     gradeWeights: [0.2, 0.35, 0.29, 0.16],
-    announcementText: "Mixed crates, mixed sellers, mixed pricing.\nThe obvious calls get rarer. Stay sharp.",
+    announcementText: "All records are original presses, but condition still rules the deal.\nGoldmine Record/Sleeve grades shape what buyers will pay.\nHold out for flips that clear at least $20 profit.",
   },
   {
     key: "round-three-garage-sale",
@@ -43,7 +43,7 @@ const ROUND_CONFIG = [
     pricePressure: 1.05,
     variance: 0.15,
     gradeWeights: [0.22, 0.36, 0.27, 0.15],
-    announcementText: "Loose grading meets opportunistic sellers.\nSome gems, plenty of traps.",
+    announcementText: "Original presses are on the table, but grading can kill value fast.\nWatch Goldmine Record/Sleeve condition closely before saying yes.\nOnly chase flips that clear at least $20 profit.",
   },
   {
     key: "round-four-antique-shop",
@@ -53,7 +53,7 @@ const ROUND_CONFIG = [
     pricePressure: 1.1,
     variance: 0.11,
     gradeWeights: [0.24, 0.37, 0.25, 0.14],
-    announcementText: "Sticker shock and thinner margins.\nDefensive NO calls can save your run.",
+    announcementText: "These are still original presses, priced by confident sellers.\nGoldmine Record/Sleeve grades decide if margin survives.\nSkip anything that cannot clear at least $20 profit.",
   },
   {
     key: "round-five-record-fair",
@@ -63,21 +63,23 @@ const ROUND_CONFIG = [
     pricePressure: 1.16,
     variance: 0.1,
     gradeWeights: [0.24, 0.39, 0.24, 0.13],
-    announcementText: "Final round. Fast calls. Tight margins.\nPick the true $20+ flips only.",
+    announcementText: "Final push: original presses with the tightest margins.\nGoldmine Record/Sleeve grading is the difference maker.\nPick only flips that can clear at least $20 profit.",
   },
 ];
 
 const MARKET_CONFIG = {
-  au: { label: "eBay Australia", saleMultiplier: 1.08, buyMultiplier: 1.19, roundBuyPressure: 0.03 },
-  us: { label: "eBay US", saleMultiplier: 0.99, buyMultiplier: 0.94, roundBuyPressure: -0.01 },
-  uk: { label: "eBay UK", saleMultiplier: 1.01, buyMultiplier: 0.99, roundBuyPressure: 0 },
-  eu: { label: "Germany / EU", saleMultiplier: 1.06, buyMultiplier: 1.04, roundBuyPressure: 0.01 },
+  au: { label: "eBay Australia", saleMultiplier: 1.03, buyMultiplier: 1.2, roundBuyPressure: 0.04 },
+  us: { label: "eBay US", saleMultiplier: 1.1, buyMultiplier: 0.96, roundBuyPressure: -0.01 },
+  uk: { label: "eBay UK", saleMultiplier: 1.07, buyMultiplier: 1.0, roundBuyPressure: 0 },
+  eu: { label: "Germany / EU", saleMultiplier: 1.09, buyMultiplier: 1.05, roundBuyPressure: 0.01 },
 };
 
 const gradeMultipliers = {
-  record: { "G+": 0.58, VG: 0.73, "VG+": 0.88, EX: 1 },
-  sleeve: { "G+": 0.9, VG: 0.95, "VG+": 1, EX: 1.04 },
+  record: { "G+": 0.54, VG: 0.71, "VG+": 0.89, EX: 1.03 },
+  sleeve: { "G+": 0.87, VG: 0.94, "VG+": 1, EX: 1.05 },
 };
+
+const ORIGINAL_PRESS_VALUE_BONUS = 1.16;
 
 const BASE_RECORD_POOL = [
   ["Nirvana", "In Utero", 79], ["The Beatles", "Abbey Road", 98], ["David Bowie", "Heroes", 71], ["Fleetwood Mac", "Rumours", 70], ["Pink Floyd", "The Wall", 92],
@@ -116,6 +118,7 @@ const announcementTitle = document.getElementById("announcementTitle");
 const announcementBody = document.getElementById("announcementBody");
 const interstitialEyebrow = document.getElementById("interstitialEyebrow");
 const roundSummaryLine = document.getElementById("roundSummaryLine");
+const roundScoreLine = document.getElementById("roundScoreLine");
 
 const artistText = document.getElementById("artist");
 const titleText = document.getElementById("title");
@@ -123,6 +126,7 @@ const gradeLineText = document.getElementById("gradeLine");
 const buyPriceText = document.getElementById("buyPrice");
 const roundLabel = document.getElementById("roundLabel");
 const cardCount = document.getElementById("cardCount");
+const timerBadge = document.getElementById("timerBadge");
 const coverImage = document.getElementById("coverImage");
 const coverFallback = document.getElementById("coverFallback");
 const tileArtist = document.getElementById("tileArtist");
@@ -196,7 +200,7 @@ function generatingCardsForRound(round, usedIds) {
     imageSrc: GENERIC_RECORD_IMAGE,
     imageLabel: `${record[0]}\n${record[1]}`,
     eligibleRounds: ROUND_CONFIG.map((entry) => entry.key),
-    baseMedianValue: record[2],
+    baseMedianValue: Math.round(record[2] * ORIGINAL_PRESS_VALUE_BONUS),
     marketAdjustments: MARKET_CONFIG,
   })).filter((record) => !usedIds.has(record.id));
 
@@ -323,13 +327,19 @@ function setCoverImage(card) {
   coverImage.src = card.imageSrc;
 }
 
+function updatingTimerBadge() {
+  timerBadge.textContent = `${timeRemaining.toFixed(1)}s`;
+}
+
 function startCountdown() {
   stopCountdown();
   timeRemaining = ROUND_SECONDS;
+  updatingTimerBadge();
   cardStartedAt = performance.now();
   timerInterval = window.setInterval(() => {
     const elapsed = (performance.now() - cardStartedAt) / 1000;
     timeRemaining = Math.max(0, ROUND_SECONDS - elapsed);
+    updatingTimerBadge();
     if (timeRemaining <= 0) {
       stopCountdown();
       handleTimeout();
@@ -387,7 +397,10 @@ function handleAnswer(playerAnswer) {
   stopCountdown();
 
   const card = getCurrentRound().cards[currentCard];
-  score += computingScore(card, playerAnswer);
+  const scoreDelta = computingScore(card, playerAnswer);
+  score += scoreDelta;
+  card.choice = playerAnswer;
+  card.scoreDelta = scoreDelta;
   applyingProfitAndLoss(card, playerAnswer);
   pendingTransitionTimeout = window.setTimeout(moveToNextCard, NEXT_CARD_DELAY_MS);
 }
@@ -400,6 +413,11 @@ function handleTimeout() {
   noBtn.disabled = true;
   streak = 0;
   score -= 15;
+  const card = getCurrentRound().cards[currentCard];
+  if (card) {
+    card.choice = "Timeout";
+    card.scoreDelta = -15;
+  }
   pendingTransitionTimeout = window.setTimeout(moveToNextCard, NEXT_CARD_DELAY_MS);
 }
 
@@ -412,9 +430,15 @@ function moveToNextCard() {
   renderCurrentCard();
 }
 
+function calculatingRoundScore(round) {
+  return round.cards.reduce((sum, card) => sum + (Number.isFinite(card.scoreDelta) ? card.scoreDelta : 0), 0);
+}
+
 function renderingRoundEndProfitSummary(round) {
   interstitialEyebrow.textContent = `${round.title} complete`;
+  const roundScore = Math.max(0, Math.round(calculatingRoundScore(round)));
   const sign = round.roundProfit >= 0 ? "+" : "-";
+  roundScoreLine.textContent = `Round Score: ${roundScore}`;
   roundSummaryLine.textContent = `Round Profit: ${sign}$${Math.abs(round.roundProfit)}`;
 }
 
@@ -430,7 +454,7 @@ function advancingRounds() {
     endingGame();
     return;
   }
-  showingBetweenRoundAds(ROUND_CONFIG[currentRoundIndex]);
+  showingBetweenRoundAds(getCurrentRound());
 }
 
 function continueAfterInterstitial() {
@@ -529,6 +553,7 @@ function resetRunState() {
   totalProfit = 0;
   streak = 0;
   timeRemaining = ROUND_SECONDS;
+  updatingTimerBadge();
   clearPendingTransition();
   stopCountdown();
 }
