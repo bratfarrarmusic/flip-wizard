@@ -1,38 +1,103 @@
 const ROUND_SECONDS = 10;
-const INTERSTITIAL_DELAY_MS = 220;
-const NEXT_CARD_DELAY_MS = 90;
+const INTERSTITIAL_DELAY_MS = 150;
+const NEXT_CARD_DELAY_MS = 70;
 const LEADERBOARD_KEY = "flipWizardLeaderboardV1";
 const LEADERBOARD_LIMIT = 5;
 
-const records = [
-  {
-    artist: "Nirvana",
-    title: "In Utero",
-    buyPrice: "$8",
-    correctAnswer: "Yes",
-    reason: "Strong demand and low buy-in leaves margin.",
-    imageSrc: "images/in-utero.jpg",
-    imageLabel: "Nirvana\nIn Utero",
-  },
-  {
-    artist: "The Beatles",
-    title: "Abbey Road",
-    buyPrice: "$35",
-    correctAnswer: "No",
-    reason: "Too high to leave enough resale margin.",
-    imageSrc: "images/abbey-road.jpg",
-    imageLabel: "The Beatles\nAbbey Road",
-  },
-  {
-    artist: "David Bowie",
-    title: "Heroes",
-    buyPrice: "$12",
-    correctAnswer: "Yes",
-    reason: "Reasonable cost with room for profit.",
-    imageSrc: "images/heroes.jpg",
-    imageLabel: "David Bowie\nHeroes",
-  },
-];
+const recordPool = {
+  roundOneLocalOpShop: [
+    {
+      artist: "Nirvana",
+      title: "In Utero",
+      buyPrice: "$8",
+      correctAnswer: "Yes",
+      reason: "Strong enough resale margin.",
+      imageSrc: "images/in-utero.jpg",
+      imageLabel: "Nirvana\nIn Utero",
+    },
+    {
+      artist: "The Beatles",
+      title: "Abbey Road",
+      buyPrice: "$35",
+      correctAnswer: "No",
+      reason: "Too expensive for a worthwhile flip.",
+      imageSrc: "images/abbey-road.jpg",
+      imageLabel: "The Beatles\nAbbey Road",
+    },
+    {
+      artist: "David Bowie",
+      title: "Heroes",
+      buyPrice: "$12",
+      correctAnswer: "Yes",
+      reason: "Healthy enough margin.",
+      imageSrc: "images/heroes.jpg",
+      imageLabel: "David Bowie\nHeroes",
+    },
+    {
+      artist: "Fleetwood Mac",
+      title: "Rumours",
+      buyPrice: "$6",
+      correctAnswer: "Yes",
+      reason: "Cheap enough to be flippable.",
+      imageSrc: "images/rumours.jpg",
+      imageLabel: "Fleetwood Mac\nRumours",
+    },
+    {
+      artist: "Pink Floyd",
+      title: "The Wall",
+      buyPrice: "$28",
+      correctAnswer: "No",
+      reason: "Buy-in is too high for the likely margin.",
+      imageSrc: "images/the-wall.jpg",
+      imageLabel: "Pink Floyd\nThe Wall",
+    },
+    {
+      artist: "Radiohead",
+      title: "OK Computer",
+      buyPrice: "$10",
+      correctAnswer: "Yes",
+      reason: "Good buy price for a likely flip.",
+      imageSrc: "images/ok-computer.jpg",
+      imageLabel: "Radiohead\nOK Computer",
+    },
+    {
+      artist: "Queen",
+      title: "Greatest Hits",
+      buyPrice: "$22",
+      correctAnswer: "No",
+      reason: "Too much paid for a common title.",
+      imageSrc: "images/queen-greatest-hits.jpg",
+      imageLabel: "Queen\nGreatest Hits",
+    },
+    {
+      artist: "Joy Division",
+      title: "Unknown Pleasures",
+      buyPrice: "$9",
+      correctAnswer: "Yes",
+      reason: "Solid margin at that entry price.",
+      imageSrc: "images/unknown-pleasures.jpg",
+      imageLabel: "Joy Division\nUnknown Pleasures",
+    },
+    {
+      artist: "Bob Dylan",
+      title: "Highway 61 Revisited",
+      buyPrice: "$14",
+      correctAnswer: "Yes",
+      reason: "Enough room to justify the flip.",
+      imageSrc: "images/highway-61.jpg",
+      imageLabel: "Bob Dylan\nHighway 61 Revisited",
+    },
+    {
+      artist: "Eagles",
+      title: "Hotel California",
+      buyPrice: "$18",
+      correctAnswer: "No",
+      reason: "Too common and too highly priced to be attractive.",
+      imageSrc: "images/hotel-california.jpg",
+      imageLabel: "Eagles\nHotel California",
+    },
+  ],
+};
 
 const introSection = document.getElementById("intro");
 const gameSection = document.getElementById("game");
@@ -67,6 +132,7 @@ const rating = document.getElementById("rating");
 const introLeaderboard = document.getElementById("introLeaderboard");
 const resultLeaderboard = document.getElementById("resultLeaderboard");
 
+let activeRoundCards = [];
 let currentCard = 0;
 let score = 0;
 let streak = 0;
@@ -77,8 +143,14 @@ let cardStartedAt = 0;
 let timerInterval = null;
 let pendingTransitionTimeout = null;
 
+function prepareActiveRoundCards({ roundKey = "roundOneLocalOpShop", cardCount = 10 } = {}) {
+  const pool = recordPool[roundKey] || [];
+  return pool.slice(0, cardCount);
+}
+
 function startGame() {
   resetGameState();
+  activeRoundCards = prepareActiveRoundCards();
   playerName = getPlayerName();
   introSection.classList.add("hidden");
   resultSection.classList.add("hidden");
@@ -87,10 +159,10 @@ function startGame() {
 }
 
 function renderCard() {
-  const record = records[currentCard];
+  const record = activeRoundCards[currentCard];
   const [artistLabel, titleLabel] = record.imageLabel.split("\n");
 
-  cardCount.textContent = `Card ${currentCard + 1} / ${records.length}`;
+  cardCount.textContent = `Card ${currentCard + 1} / ${activeRoundCards.length}`;
   scoreText.textContent = `Score ${Math.round(score)}`;
   streakText.textContent = `Streak ${streak}`;
   artistText.textContent = record.artist;
@@ -105,7 +177,7 @@ function renderCard() {
   yesBtn.disabled = false;
   noBtn.disabled = false;
 
-  preloadRecordImage(records[currentCard + 1]);
+  preloadRecordImage(activeRoundCards[currentCard + 1]);
   startCountdown();
 }
 
@@ -186,7 +258,7 @@ function handleAnswer(playerAnswer) {
   noBtn.disabled = true;
   stopCountdown();
 
-  const record = records[currentCard];
+  const record = activeRoundCards[currentCard];
   const isCorrect = playerAnswer === record.correctAnswer;
 
   if (isCorrect) {
@@ -231,7 +303,7 @@ function showInterstitial(onDone) {
 function moveToNextCard() {
   currentCard += 1;
 
-  if (currentCard >= records.length) {
+  if (currentCard >= activeRoundCards.length) {
     endGame();
     return;
   }
@@ -257,11 +329,11 @@ function endGame() {
 }
 
 function getRatingLine(points) {
-  if (points <= 159) {
+  if (points <= 249) {
     return "Back to the bargain bins.";
   }
 
-  if (points <= 319) {
+  if (points <= 749) {
     return "Fast eye. Solid instincts.";
   }
 
@@ -269,15 +341,15 @@ function getRatingLine(points) {
 }
 
 function getSummaryLine(points) {
-  if (points <= 159) {
-    return "Shake it off and run it back. The next crate has your name on it.";
+  if (points <= 249) {
+    return "You worked the crates hard. Try another run and trust your first read.";
   }
 
-  if (points <= 319) {
-    return "Great pace and solid reads. One hotter streak away from elite.";
+  if (points <= 749) {
+    return "Great pace and solid calls. You were one streak away from a monster score.";
   }
 
-  return "Outstanding run. You flipped like a pro dealer today.";
+  return "Outstanding round. You flipped that op-shop stack like a pro.";
 }
 
 function getPlayerName() {
@@ -356,6 +428,7 @@ function resetGameState() {
   streak = 0;
   answerLocked = false;
   timeRemaining = ROUND_SECONDS;
+  activeRoundCards = [];
   scoreText.textContent = "Score 0";
   streakText.textContent = "Streak 0";
   timerText.textContent = `Time ${ROUND_SECONDS.toFixed(1)}s`;
