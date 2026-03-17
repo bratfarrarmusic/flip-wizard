@@ -45,7 +45,7 @@
         <p id="announcementEyebrow" class="eyebrow"></p>
         <h2 id="announcementTitle"></h2>
         <p id="announcementBody" class="announcement-body"></p>
-        <button id="startRoundBtn" class="primary-btn">Drop the Needle</button>
+        <button id="startRoundBtn" class="primary-btn">Start Round</button>
       </section>
 
       <section id="game" class="panel hidden" aria-live="polite">
@@ -69,6 +69,7 @@
               <p id="gradeLine" class="overlay-detail"></p>
               <p id="buyPrice" class="overlay-detail"></p>
             </div>
+            <p id="timerBadge" class="timer-tag">9.0s</p>
             <p id="roundLabel" class="corner-tag left"></p>
             <p id="cardCount" class="corner-tag right"></p>
           </div>
@@ -111,7 +112,8 @@
     <section id="betweenRoundInterstitial" class="interstitial hidden" aria-live="polite" role="dialog" aria-label="Sponsored transition space">
       <div class="interstitial-card">
         <p id="interstitialEyebrow" class="eyebrow"></p>
-        <h2>Sponsored Break</h2>
+        <h2>Round Complete</h2>
+        <p id="roundScoreLine" class="final-score"></p>
         <p id="roundSummaryLine" class="announcement-body"></p>
         <div id="interstitialAdSlot" class="ad-slot interstitial-slot">
           <div class="ad-copy-wrap">
