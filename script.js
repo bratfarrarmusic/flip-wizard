@@ -1,11 +1,10 @@
-const ROUND_SECONDS = 10;
-const NEXT_CARD_DELAY_MS = 460;
-const FEEDBACK_HIDE_DELAY_MS = 650;
-const LEADERBOARD_KEY = "flipWizardLeaderboardV3";
-const LEADERBOARD_LIMIT = 5;
-const CARDS_PER_ROUND = 10;
-const GENERIC_RECORD_IMAGE = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 600 600'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0%25' stop-color='%232f4858'/%3E%3Cstop offset='100%25' stop-color='%2333658a'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='600' height='600' fill='url(%23g)'/%3E%3Ccircle cx='300' cy='300' r='180' fill='none' stroke='rgba(255,255,255,0.38)' stroke-width='8'/%3E%3Ccircle cx='300' cy='300' r='28' fill='rgba(255,255,255,0.55)'/%3E%3C/svg%3E";
+const ROUND_SECONDS = 9;
+const NEXT_CARD_DELAY_MS = 350;
+const LEADERBOARD_KEY = "flipWizardLeaderboardV4";
+const LEADERBOARD_LIMIT = 8;
+const CARDS_PER_ROUND = 8;
 const TARGET_PROFIT = 20;
+const GENERIC_RECORD_IMAGE = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 600 600'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0%25' stop-color='%232f4858'/%3E%3Cstop offset='100%25' stop-color='%2333658a'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='600' height='600' fill='url(%23g)'/%3E%3Ccircle cx='300' cy='300' r='180' fill='none' stroke='rgba(255,255,255,0.36)' stroke-width='8'/%3E%3Ccircle cx='300' cy='300' r='28' fill='rgba(255,255,255,0.55)'/%3E%3C/svg%3E";
 
 const SCREEN = {
   HOME: "home",
@@ -17,231 +16,228 @@ const SCREEN = {
 
 const ROUND_CONFIG = [
   {
-    key: "local-op-shop",
-    title: "Round One: Local Op-Shop",
+    key: "round-one-op-shop",
+    title: "Round One Op Shop",
     eyebrow: "Round One",
-    announcementText: "Records are graded using Goldmine Record/Sleeve condition.\nCondition affects value and is built into the pricing.\nCan you flip them and make at least $20 profit?\n3–2–1 GO!",
     cardCount: CARDS_PER_ROUND,
-    difficultyBand: "easy",
+    pricePressure: 0.94,
+    variance: 0.13,
+    gradeWeights: [0.17, 0.34, 0.31, 0.18],
+    announcementText: "Goldmine Record/Sleeve grading drives value.\nCondition changes what the market will really pay.\nYour call: flip only if you can clear at least $20 profit.",
   },
   {
-    key: "sunday-market",
-    title: "Round Two: Sunday Market",
+    key: "round-two-sunday-market",
+    title: "Round Two Sunday Market",
     eyebrow: "Round Two",
-    announcementText: "Fresh crates, mixed sellers, more price chaos.\nCondition still matters.\nCan you still spot the records with at least a $20 margin?\n3–2–1 GO!",
     cardCount: CARDS_PER_ROUND,
-    difficultyBand: "mixed",
+    pricePressure: 1.0,
+    variance: 0.14,
+    gradeWeights: [0.2, 0.35, 0.29, 0.16],
+    announcementText: "Mixed crates, mixed sellers, mixed pricing.\nThe obvious calls get rarer. Stay sharp.",
   },
   {
-    key: "garage-sale",
-    title: "Round Three: Garage Sale",
+    key: "round-three-garage-sale",
+    title: "Round Three Garage Sale",
     eyebrow: "Round Three",
-    announcementText: "Loose prices, mixed quality, occasional sleepers.\nTrust your eye.\nCan you find the records with at least a $20 profit in them?\n3–2–1 GO!",
     cardCount: CARDS_PER_ROUND,
-    difficultyBand: "swing",
+    pricePressure: 1.05,
+    variance: 0.15,
+    gradeWeights: [0.22, 0.36, 0.27, 0.15],
+    announcementText: "Loose grading meets opportunistic sellers.\nSome gems, plenty of traps.",
   },
   {
-    key: "record-fair",
-    title: "Round Four: Record Fair",
+    key: "round-four-antique-shop",
+    title: "Round Four Antique Shop",
     eyebrow: "Round Four",
-    announcementText: "Sharper sellers. Tougher buys.\nMargins get thinner and the pressure goes up.\nCan you still pick the records with $20+ profit?\n3–2–1 GO!",
     cardCount: CARDS_PER_ROUND,
-    difficultyBand: "hard",
+    pricePressure: 1.1,
+    variance: 0.11,
+    gradeWeights: [0.24, 0.37, 0.25, 0.14],
+    announcementText: "Sticker shock and thinner margins.\nDefensive NO calls can save your run.",
   },
   {
-    key: "late-night-marketplace",
-    title: "Round Five: Late-Night Marketplace",
+    key: "round-five-record-fair",
+    title: "Round Five Record Fair",
     eyebrow: "Round Five",
-    announcementText: "Fast listings. Risky grades. Last-minute chances.\nOne final round to prove you are a Flip Wizard.\nCan you spot the $20+ flips before time runs out?\n3–2–1 GO!",
     cardCount: CARDS_PER_ROUND,
-    difficultyBand: "expert",
+    pricePressure: 1.16,
+    variance: 0.1,
+    gradeWeights: [0.24, 0.39, 0.24, 0.13],
+    announcementText: "Final round. Fast calls. Tight margins.\nPick the true $20+ flips only.",
   },
 ];
 
-const BASE_RECORD_POOL = [
-  ["Nirvana", "In Utero", 55], ["The Beatles", "Abbey Road", 72], ["David Bowie", "Heroes", 47], ["Fleetwood Mac", "Rumours", 48], ["Pink Floyd", "The Wall", 62],
-  ["Radiohead", "OK Computer", 59], ["Queen", "Greatest Hits", 54], ["Joy Division", "Unknown Pleasures", 57], ["Bob Dylan", "Highway 61 Revisited", 52], ["Eagles", "Hotel California", 49],
-  ["The Rolling Stones", "Sticky Fingers", 58], ["Michael Jackson", "Thriller", 51], ["Bruce Springsteen", "Born to Run", 53], ["Talking Heads", "Remain in Light", 56], ["The Clash", "London Calling", 61],
-  ["Prince", "Purple Rain", 50], ["Lou Reed", "Transformer", 46], ["Patti Smith", "Horses", 54], ["AC/DC", "Back in Black", 47], ["Led Zeppelin", "IV", 58],
-  ["Neil Young", "Harvest", 49], ["U2", "The Joshua Tree", 53], ["The Cure", "Disintegration", 57], ["Marvin Gaye", "What's Going On", 52], ["Sade", "Diamond Life", 44],
-  ["Stevie Wonder", "Innervisions", 55], ["The Smiths", "The Queen Is Dead", 63], ["Pixies", "Doolittle", 58], ["Metallica", "Ride the Lightning", 66], ["Daft Punk", "Discovery", 70],
-  ["OutKast", "Aquemini", 60], ["Kendrick Lamar", "good kid, m.A.A.d city", 64], ["Amy Winehouse", "Back to Black", 48], ["Massive Attack", "Mezzanine", 57], ["Portishead", "Dummy", 56],
-  ["The Strokes", "Is This It", 62], ["Arctic Monkeys", "AM", 50], ["Tame Impala", "Currents", 54], ["Kate Bush", "Hounds of Love", 61], ["Sonic Youth", "Daydream Nation", 59],
-  ["The Police", "Synchronicity", 45], ["R.E.M.", "Automatic for the People", 52], ["A Tribe Called Quest", "The Low End Theory", 63], ["Nas", "Illmatic", 68], ["Erykah Badu", "Baduizm", 55],
-  ["D'Angelo", "Voodoo", 60], ["The National", "Boxer", 51], ["The xx", "xx", 46], ["Björk", "Post", 58], ["Beastie Boys", "Paul's Boutique", 62],
-  ["The Doors", "L.A. Woman", 52], ["Joni Mitchell", "Blue", 56], ["The Velvet Underground", "Loaded", 57], ["Can", "Ege Bamyasi", 65], ["Aphex Twin", "Selected Ambient Works 85-92", 66],
-  ["The War on Drugs", "Lost in the Dream", 49], ["LCD Soundsystem", "Sound of Silver", 58], ["The Weeknd", "After Hours", 45], ["Frank Ocean", "Channel Orange", 67], ["Fiona Apple", "When the Pawn...", 60],
-  ["The Kinks", "Lola Versus Powerman", 51], ["Madvillain", "Madvillainy", 70], ["Interpol", "Turn on the Bright Lights", 56], ["My Bloody Valentine", "Loveless", 72], ["The Cranberries", "No Need to Argue", 47],
-];
-
-const roundDifficultyProfiles = {
-  easy: { buyLow: 0.34, buyHigh: 0.74, gradeWeights: [0.12, 0.34, 0.36, 0.18] },
-  mixed: { buyLow: 0.42, buyHigh: 0.84, gradeWeights: [0.18, 0.35, 0.31, 0.16] },
-  swing: { buyLow: 0.4, buyHigh: 0.95, gradeWeights: [0.22, 0.34, 0.3, 0.14] },
-  hard: { buyLow: 0.55, buyHigh: 1.02, gradeWeights: [0.2, 0.38, 0.29, 0.13] },
-  expert: { buyLow: 0.62, buyHigh: 1.08, gradeWeights: [0.24, 0.39, 0.26, 0.11] },
+const MARKET_CONFIG = {
+  au: { label: "eBay Australia", saleMultiplier: 1.08, buyMultiplier: 1.19, roundBuyPressure: 0.03 },
+  us: { label: "eBay US", saleMultiplier: 0.99, buyMultiplier: 0.94, roundBuyPressure: -0.01 },
+  uk: { label: "eBay UK", saleMultiplier: 1.01, buyMultiplier: 0.99, roundBuyPressure: 0 },
+  eu: { label: "Germany / EU", saleMultiplier: 1.06, buyMultiplier: 1.04, roundBuyPressure: 0.01 },
 };
 
 const gradeMultipliers = {
-  record: { "G+": 0.55, VG: 0.72, "VG+": 0.88, EX: 0.97 },
-  sleeve: { "G+": 0.9, VG: 0.96, "VG+": 1, EX: 1.04 },
+  record: { "G+": 0.58, VG: 0.73, "VG+": 0.88, EX: 1 },
+  sleeve: { "G+": 0.9, VG: 0.95, "VG+": 1, EX: 1.04 },
 };
+
+const BASE_RECORD_POOL = [
+  ["Nirvana", "In Utero", 79], ["The Beatles", "Abbey Road", 98], ["David Bowie", "Heroes", 71], ["Fleetwood Mac", "Rumours", 70], ["Pink Floyd", "The Wall", 92],
+  ["Radiohead", "OK Computer", 87], ["Queen", "Greatest Hits", 73], ["Joy Division", "Unknown Pleasures", 81], ["Bob Dylan", "Highway 61 Revisited", 75], ["Eagles", "Hotel California", 72],
+  ["The Rolling Stones", "Sticky Fingers", 84], ["Michael Jackson", "Thriller", 69], ["Bruce Springsteen", "Born to Run", 77], ["Talking Heads", "Remain in Light", 83], ["The Clash", "London Calling", 88],
+  ["Prince", "Purple Rain", 72], ["Lou Reed", "Transformer", 69], ["Patti Smith", "Horses", 81], ["AC/DC", "Back in Black", 71], ["Led Zeppelin", "IV", 85],
+  ["Neil Young", "Harvest", 72], ["U2", "The Joshua Tree", 78], ["The Cure", "Disintegration", 86], ["Marvin Gaye", "What's Going On", 80], ["Sade", "Diamond Life", 66],
+  ["Stevie Wonder", "Innervisions", 82], ["The Smiths", "The Queen Is Dead", 92], ["Pixies", "Doolittle", 86], ["Metallica", "Ride the Lightning", 98], ["Daft Punk", "Discovery", 103],
+  ["OutKast", "Aquemini", 89], ["Kendrick Lamar", "good kid, m.A.A.d city", 95], ["Amy Winehouse", "Back to Black", 72], ["Massive Attack", "Mezzanine", 86], ["Portishead", "Dummy", 84],
+  ["The Strokes", "Is This It", 90], ["Arctic Monkeys", "AM", 73], ["Tame Impala", "Currents", 76], ["Kate Bush", "Hounds of Love", 94], ["Sonic Youth", "Daydream Nation", 90],
+  ["The Police", "Synchronicity", 67], ["R.E.M.", "Automatic for the People", 76], ["A Tribe Called Quest", "The Low End Theory", 95], ["Nas", "Illmatic", 102], ["Erykah Badu", "Baduizm", 81],
+  ["D'Angelo", "Voodoo", 90], ["The National", "Boxer", 73], ["The xx", "xx", 66], ["Björk", "Post", 86], ["Beastie Boys", "Paul's Boutique", 91],
+  ["The Doors", "L.A. Woman", 76], ["Joni Mitchell", "Blue", 83], ["The Velvet Underground", "Loaded", 84], ["Can", "Ege Bamyasi", 101], ["Aphex Twin", "Selected Ambient Works 85-92", 100],
+  ["The War on Drugs", "Lost in the Dream", 72], ["LCD Soundsystem", "Sound of Silver", 85], ["The Weeknd", "After Hours", 67], ["Frank Ocean", "Channel Orange", 102], ["Fiona Apple", "When the Pawn...", 90],
+  ["The Kinks", "Lola Versus Powerman", 75], ["Madvillain", "Madvillainy", 104], ["Interpol", "Turn on the Bright Lights", 83], ["My Bloody Valentine", "Loveless", 106], ["The Cranberries", "No Need to Argue", 69],
+];
 
 const introSection = document.getElementById("intro");
 const roundAnnouncementSection = document.getElementById("roundAnnouncement");
 const gameSection = document.getElementById("game");
 const resultSection = document.getElementById("result");
-const betweenRoundInterstitial = document.getElementById("betweenRoundInterstitial");
+const interstitialSection = document.getElementById("betweenRoundInterstitial");
 
 const playerNameInput = document.getElementById("playerName");
+const marketSelect = document.getElementById("marketSelect");
 const startBtn = document.getElementById("startBtn");
 const startRoundBtn = document.getElementById("startRoundBtn");
 const yesBtn = document.getElementById("yesBtn");
 const noBtn = document.getElementById("noBtn");
+const continueRoundBtn = document.getElementById("continueRoundBtn");
 const playAgainBtn = document.getElementById("playAgainBtn");
 const clearLeaderboardBtn = document.getElementById("clearLeaderboardBtn");
-const continueRoundBtn = document.getElementById("continueRoundBtn");
 
 const announcementEyebrow = document.getElementById("announcementEyebrow");
 const announcementTitle = document.getElementById("announcementTitle");
 const announcementBody = document.getElementById("announcementBody");
-const roundLabel = document.getElementById("roundLabel");
-const cardCount = document.getElementById("cardCount");
-const totalProgress = document.getElementById("totalProgress");
-const scoreText = document.getElementById("score");
-const speedScoreText = document.getElementById("speedScore");
-const profitScoreText = document.getElementById("profitScore");
-const streakText = document.getElementById("streak");
-const timerText = document.getElementById("timer");
+const interstitialEyebrow = document.getElementById("interstitialEyebrow");
+const roundSummaryLine = document.getElementById("roundSummaryLine");
+
 const artistText = document.getElementById("artist");
 const titleText = document.getElementById("title");
 const gradeLineText = document.getElementById("gradeLine");
 const buyPriceText = document.getElementById("buyPrice");
+const roundLabel = document.getElementById("roundLabel");
+const cardCount = document.getElementById("cardCount");
 const coverImage = document.getElementById("coverImage");
 const coverFallback = document.getElementById("coverFallback");
-const albumTile = document.getElementById("albumTile");
 const tileArtist = document.getElementById("tileArtist");
 const tileTitle = document.getElementById("tileTitle");
-const scoreFeedback = document.getElementById("scoreFeedback");
 
 const finalPlayer = document.getElementById("finalPlayer");
-const finalSpeed = document.getElementById("finalSpeed");
-const finalProfit = document.getElementById("finalProfit");
+const finalMarket = document.getElementById("finalMarket");
 const finalScore = document.getElementById("finalScore");
+const finalProfit = document.getElementById("finalProfit");
 const rating = document.getElementById("rating");
 const summary = document.getElementById("summary");
-
 const introLeaderboard = document.getElementById("introLeaderboard");
 const resultLeaderboard = document.getElementById("resultLeaderboard");
 
-const interstitialEyebrow = document.getElementById("interstitialEyebrow");
-const roundSummaryLine = document.getElementById("roundSummaryLine");
 const homeHeroImage = document.getElementById("homeHeroImage");
 const homeHeroFallback = document.getElementById("homeHeroFallback");
 
-let currentScreen = SCREEN.HOME;
-let playerName = "Anonymous";
 let rounds = [];
+let selectedMarket = "au";
 let currentRoundIndex = 0;
 let pendingAnnouncementRoundIndex = 0;
 let currentCard = 0;
-let totalCardIndex = 0;
-let speedScore = 0;
-let profitScore = 0;
-let streak = 0;
 let answerLocked = false;
-let timeRemaining = ROUND_SECONDS;
-let cardStartedAt = 0;
 let timerInterval = null;
+let cardStartedAt = 0;
+let timeRemaining = ROUND_SECONDS;
 let pendingTransitionTimeout = null;
-let pendingFeedbackTimeout = null;
+let playerName = "Anonymous";
+let score = 0;
+let totalProfit = 0;
+let streak = 0;
 
 function renderScreen(screen) {
-  currentScreen = screen;
   introSection.classList.toggle("hidden", screen !== SCREEN.HOME);
   roundAnnouncementSection.classList.toggle("hidden", screen !== SCREEN.ROUND_ANNOUNCEMENT);
   gameSection.classList.toggle("hidden", screen !== SCREEN.GAMEPLAY);
-  betweenRoundInterstitial.classList.toggle("hidden", screen !== SCREEN.BETWEEN_ROUND_AD);
   resultSection.classList.toggle("hidden", screen !== SCREEN.END);
+  interstitialSection.classList.toggle("hidden", screen !== SCREEN.BETWEEN_ROUND_AD);
+}
+
+function getPlayerName() {
+  return playerNameInput.value.trim() || "Anonymous";
+}
+
+function selectingMarket() {
+  selectedMarket = marketSelect.value in MARKET_CONFIG ? marketSelect.value : "au";
 }
 
 function startingNewGame() {
-  resetGameState();
+  selectingMarket();
   playerName = getPlayerName();
-  rounds = prepareAllRounds();
+  resetRunState();
+  prepareRounds();
   showRoundAnnouncement(0);
 }
 
-function prepareAllRounds() {
+function prepareRounds() {
   const usedIds = new Set();
-  return ROUND_CONFIG.map((round) => {
-    const selected = selectingRandomCards(round, usedIds);
-    return { ...round, cards: selected };
-  });
+  rounds = ROUND_CONFIG.map((round) => ({
+    ...round,
+    cards: generatingCardsForRound(round, usedIds),
+    roundProfit: 0,
+  }));
 }
 
-function selectingRandomCards(round, usedIds) {
-  const source = BASE_RECORD_POOL.map((record, idx) => ({
+function generatingCardsForRound(round, usedIds) {
+  const source = BASE_RECORD_POOL.map((record) => ({
     id: `${record[0]}__${record[1]}`,
     artist: record[0],
     title: record[1],
     imageSrc: GENERIC_RECORD_IMAGE,
     imageLabel: `${record[0]}\n${record[1]}`,
-    baseReferenceValue: record[2],
     eligibleRounds: ROUND_CONFIG.map((entry) => entry.key),
-    difficultyBand: ROUND_CONFIG[Math.min(idx % ROUND_CONFIG.length, ROUND_CONFIG.length - 1)].difficultyBand,
+    baseMedianValue: record[2],
+    marketAdjustments: MARKET_CONFIG,
   })).filter((record) => !usedIds.has(record.id));
 
-  const sorted = source.sort((a, b) => Math.abs(a.baseReferenceValue - targetReference(round.difficultyBand)) - Math.abs(b.baseReferenceValue - targetReference(round.difficultyBand)));
-  const pool = shuffled(sorted.slice(0, 24));
-  const chosen = pool.slice(0, round.cardCount).map((card) => buildRuntimeCard(card, round));
+  const chosen = shuffled(source).slice(0, round.cardCount).map((card) => buildRuntimeCard(card, round));
   chosen.forEach((card) => usedIds.add(card.id));
   return chosen;
 }
 
-function targetReference(difficultyBand) {
-  return { easy: 48, mixed: 54, swing: 58, hard: 60, expert: 63 }[difficultyBand] || 55;
-}
-
-function shuffled(arr) {
-  const clone = [...arr];
-  for (let i = clone.length - 1; i > 0; i -= 1) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [clone[i], clone[j]] = [clone[j], clone[i]];
-  }
-  return clone;
-}
-
-function assigningGrades(profile) {
+function assigningGrades(round) {
   const grades = ["G+", "VG", "VG+", "EX"];
   const pick = () => {
-    const r = Math.random();
-    let cumulative = 0;
+    const roll = Math.random();
+    let sum = 0;
     for (let i = 0; i < grades.length; i += 1) {
-      cumulative += profile.gradeWeights[i];
-      if (r <= cumulative) {
-        return grades[i];
-      }
+      sum += round.gradeWeights[i];
+      if (roll <= sum) return grades[i];
     }
     return "VG";
   };
   return { recordGrade: pick(), sleeveGrade: pick() };
 }
 
-function generatingBuyPrice(baseReferenceValue, profile) {
-  const low = Math.round(baseReferenceValue * profile.buyLow);
-  const high = Math.round(baseReferenceValue * profile.buyHigh);
-  return Math.floor(Math.random() * (high - low + 1)) + low;
-}
-
-function calculatingHiddenSalePrice(baseReferenceValue, recordGrade, sleeveGrade, roundBand) {
+function calculatingMarketAdjustedLikelySaleValue(baseMedianValue, marketKey, recordGrade, sleeveGrade) {
+  const market = MARKET_CONFIG[marketKey];
   const gradeFactor = gradeMultipliers.record[recordGrade] * gradeMultipliers.sleeve[sleeveGrade];
-  const roundVariance = { easy: 1.03, mixed: 1, swing: 0.99, hard: 0.97, expert: 0.95 }[roundBand] || 1;
-  return Math.max(10, Math.round(baseReferenceValue * gradeFactor * roundVariance));
+  const drift = 0.94 + Math.random() * 0.15;
+  return Math.max(16, Math.round(baseMedianValue * market.saleMultiplier * gradeFactor * drift));
 }
 
-function calculatingHiddenProfit(hiddenSalePrice, displayedBuyPrice) {
-  return hiddenSalePrice - displayedBuyPrice;
+function generatingDisplayedBuyPrice(hiddenLikelySalePrice, round, marketKey) {
+  const market = MARKET_CONFIG[marketKey];
+  const spread = round.variance;
+  const under = hiddenLikelySalePrice * (0.56 - spread);
+  const over = hiddenLikelySalePrice * (1.13 + spread);
+  const floor = Math.max(8, Math.round(under * market.buyMultiplier * round.pricePressure));
+  const ceiling = Math.max(floor + 6, Math.round(over * market.buyMultiplier * (round.pricePressure + market.roundBuyPressure)));
+  return Math.floor(Math.random() * (ceiling - floor + 1)) + floor;
+}
+
+function computingHiddenProfit(hiddenLikelySalePrice, displayedBuyPrice) {
+  return hiddenLikelySalePrice - displayedBuyPrice;
 }
 
 function determiningCorrectAnswer(hiddenProfit) {
@@ -249,11 +245,10 @@ function determiningCorrectAnswer(hiddenProfit) {
 }
 
 function buildRuntimeCard(card, round) {
-  const profile = roundDifficultyProfiles[round.difficultyBand];
-  const { recordGrade, sleeveGrade } = assigningGrades(profile);
-  const displayedBuyPrice = generatingBuyPrice(card.baseReferenceValue, profile);
-  const hiddenSalePrice = calculatingHiddenSalePrice(card.baseReferenceValue, recordGrade, sleeveGrade, round.difficultyBand);
-  const hiddenProfit = calculatingHiddenProfit(hiddenSalePrice, displayedBuyPrice);
+  const { recordGrade, sleeveGrade } = assigningGrades(round);
+  const hiddenLikelySalePrice = calculatingMarketAdjustedLikelySaleValue(card.baseMedianValue, selectedMarket, recordGrade, sleeveGrade);
+  const displayedBuyPrice = generatingDisplayedBuyPrice(hiddenLikelySalePrice, round, selectedMarket);
+  const hiddenProfit = computingHiddenProfit(hiddenLikelySalePrice, displayedBuyPrice);
   const correctAnswer = determiningCorrectAnswer(hiddenProfit);
 
   return {
@@ -261,7 +256,7 @@ function buildRuntimeCard(card, round) {
     recordGrade,
     sleeveGrade,
     displayedBuyPrice,
-    hiddenSalePrice,
+    hiddenLikelySalePrice,
     hiddenProfit,
     correctAnswer,
   };
@@ -291,6 +286,19 @@ function getCurrentRound() {
   return rounds[currentRoundIndex];
 }
 
+function renderingStrippedBackCardView(card) {
+  const [artistLabel, titleLabel] = card.imageLabel.split("\n");
+  artistText.textContent = card.artist;
+  titleText.textContent = card.title;
+  gradeLineText.textContent = `${card.recordGrade}/${card.sleeveGrade}`;
+  buyPriceText.textContent = `Buy Price: $${card.displayedBuyPrice}`;
+  tileArtist.textContent = artistLabel || card.artist;
+  tileTitle.textContent = titleLabel || card.title;
+  roundLabel.textContent = getCurrentRound().title;
+  cardCount.textContent = `${currentCard + 1}/${getCurrentRound().cards.length}`;
+  setCoverImage(card);
+}
+
 function renderCurrentCard() {
   const round = getCurrentRound();
   const card = round.cards[currentCard];
@@ -299,27 +307,10 @@ function renderCurrentCard() {
     return;
   }
 
-  const [artistLabel, titleLabel] = card.imageLabel.split("\n");
-  roundLabel.textContent = round.title;
-  cardCount.textContent = `Card ${currentCard + 1}/${round.cards.length}`;
-  totalProgress.textContent = `Total ${totalCardIndex + 1}/${ROUND_CONFIG.length * CARDS_PER_ROUND}`;
-  timerText.textContent = `Timer ${ROUND_SECONDS.toFixed(1)}s`;
-  streakText.textContent = `Streak x${streak}`;
-  speedScoreText.textContent = `Speed ${Math.round(speedScore)}`;
-  profitScoreText.textContent = `Profit ${Math.round(profitScore)}`;
-  scoreText.textContent = `Total ${Math.round(speedScore + profitScore)}`;
-
-  artistText.textContent = card.artist;
-  titleText.textContent = card.title;
-  gradeLineText.textContent = `${card.recordGrade}/${card.sleeveGrade}`;
-  buyPriceText.textContent = `$${card.displayedBuyPrice}`;
-  tileArtist.textContent = artistLabel || card.artist;
-  tileTitle.textContent = titleLabel || card.title;
-
-  setCoverImage(card);
   answerLocked = false;
   yesBtn.disabled = false;
   noBtn.disabled = false;
+  renderingStrippedBackCardView(card);
   startCountdown();
 }
 
@@ -327,7 +318,6 @@ function setCoverImage(card) {
   coverImage.src = "";
   coverImage.alt = `${card.artist} — ${card.title} cover`;
   coverFallback.classList.remove("hidden");
-  albumTile.setAttribute("aria-label", `${card.artist} ${card.title} cover`);
   coverImage.onload = () => coverFallback.classList.add("hidden");
   coverImage.onerror = () => coverFallback.classList.remove("hidden");
   coverImage.src = card.imageSrc;
@@ -337,16 +327,14 @@ function startCountdown() {
   stopCountdown();
   timeRemaining = ROUND_SECONDS;
   cardStartedAt = performance.now();
-  updateTimerDisplay();
   timerInterval = window.setInterval(() => {
     const elapsed = (performance.now() - cardStartedAt) / 1000;
     timeRemaining = Math.max(0, ROUND_SECONDS - elapsed);
-    updateTimerDisplay();
     if (timeRemaining <= 0) {
       stopCountdown();
       handleTimeout();
     }
-  }, 50);
+  }, 80);
 }
 
 function stopCountdown() {
@@ -356,47 +344,42 @@ function stopCountdown() {
   }
 }
 
-function updateTimerDisplay() {
-  timerText.textContent = `Timer ${timeRemaining.toFixed(1)}s`;
-}
+function computingScore(card, playerAnswer) {
+  const profitable = card.hiddenProfit >= TARGET_PROFIT;
+  const speedBonus = Math.round(timeRemaining * 10);
 
-function awardingSpeedScore(timeLeft, activeStreak) {
-  const base = 75;
-  const timerBonus = Math.round(timeLeft * 18);
-  const streakBonus = activeStreak >= 2 ? activeStreak * 14 : 0;
-  return base + timerBonus + streakBonus;
-}
-
-function awardingProfitScore(card, answer) {
-  if (answer === "Yes") {
-    return Math.max(0, card.hiddenProfit);
-  }
-  return card.hiddenProfit < 0 ? Math.min(24, Math.abs(card.hiddenProfit)) : 10;
-}
-
-function renderingFastScoreFeedback(speedGain, profitGain, activeStreak, wasCorrect, timedOut = false) {
-  if (pendingFeedbackTimeout) {
-    clearTimeout(pendingFeedbackTimeout);
+  if (playerAnswer === "Yes") {
+    if (profitable) {
+      streak += 1;
+      return 120 + speedBonus + (streak >= 2 ? streak * 8 : 0);
+    }
+    streak = 0;
+    return card.hiddenProfit < 0 ? -60 : -25;
   }
 
-  if (timedOut) {
-    scoreFeedback.textContent = "Time up. No score this card.";
-  } else if (!wasCorrect) {
-    scoreFeedback.textContent = "Missed call. Streak reset.";
-  } else {
-    scoreFeedback.textContent = `+${speedGain} Speed • +${profitGain} Profit • Streak x${activeStreak}`;
+  if (!profitable) {
+    streak += 1;
+    return 85 + (card.hiddenProfit < 0 ? 18 : 0) + (streak >= 3 ? 10 : 0);
   }
 
-  scoreFeedback.classList.remove("hidden");
-  pendingFeedbackTimeout = window.setTimeout(() => {
-    scoreFeedback.classList.add("hidden");
-  }, FEEDBACK_HIDE_DELAY_MS);
+  streak = 0;
+  return -20;
+}
+
+function applyingProfitAndLoss(card, playerAnswer) {
+  let delta = 0;
+  if (playerAnswer === "Yes") {
+    delta = card.hiddenProfit;
+  } else if (card.hiddenProfit >= TARGET_PROFIT) {
+    delta = -5;
+  }
+
+  totalProfit += delta;
+  getCurrentRound().roundProfit += delta;
 }
 
 function handleAnswer(playerAnswer) {
-  if (answerLocked) {
-    return;
-  }
+  if (answerLocked) return;
 
   answerLocked = true;
   yesBtn.disabled = true;
@@ -404,47 +387,23 @@ function handleAnswer(playerAnswer) {
   stopCountdown();
 
   const card = getCurrentRound().cards[currentCard];
-  const isCorrect = playerAnswer === card.correctAnswer;
-
-  if (isCorrect) {
-    streak += 1;
-    const speedGain = awardingSpeedScore(timeRemaining, streak);
-    const profitGain = awardingProfitScore(card, playerAnswer);
-    speedScore += speedGain;
-    profitScore += profitGain;
-    renderingFastScoreFeedback(speedGain, profitGain, streak, true);
-  } else {
-    streak = 0;
-    renderingFastScoreFeedback(0, 0, streak, false);
-  }
-
-  renderScoreStrip();
+  score += computingScore(card, playerAnswer);
+  applyingProfitAndLoss(card, playerAnswer);
   pendingTransitionTimeout = window.setTimeout(moveToNextCard, NEXT_CARD_DELAY_MS);
 }
 
 function handleTimeout() {
-  if (answerLocked) {
-    return;
-  }
+  if (answerLocked) return;
 
   answerLocked = true;
   yesBtn.disabled = true;
   noBtn.disabled = true;
   streak = 0;
-  renderScoreStrip();
-  renderingFastScoreFeedback(0, 0, streak, false, true);
+  score -= 15;
   pendingTransitionTimeout = window.setTimeout(moveToNextCard, NEXT_CARD_DELAY_MS);
 }
 
-function renderScoreStrip() {
-  streakText.textContent = `Streak x${streak}`;
-  speedScoreText.textContent = `Speed ${Math.round(speedScore)}`;
-  profitScoreText.textContent = `Profit ${Math.round(profitScore)}`;
-  scoreText.textContent = `Total ${Math.round(speedScore + profitScore)}`;
-}
-
 function moveToNextCard() {
-  totalCardIndex += 1;
   currentCard += 1;
   if (currentCard >= getCurrentRound().cards.length) {
     advancingRounds();
@@ -453,9 +412,14 @@ function moveToNextCard() {
   renderCurrentCard();
 }
 
-function showingBetweenRoundAds(round) {
+function renderingRoundEndProfitSummary(round) {
   interstitialEyebrow.textContent = `${round.title} complete`;
-  roundSummaryLine.textContent = `Speed ${Math.round(speedScore)} • Profit ${Math.round(profitScore)} • Total ${Math.round(speedScore + profitScore)}`;
+  const sign = round.roundProfit >= 0 ? "+" : "-";
+  roundSummaryLine.textContent = `Round Profit: ${sign}$${Math.abs(round.roundProfit)}`;
+}
+
+function showingBetweenRoundAds(round) {
+  renderingRoundEndProfitSummary(round);
   renderScreen(SCREEN.BETWEEN_ROUND_AD);
 }
 
@@ -475,32 +439,38 @@ function continueAfterInterstitial() {
 
 function endingGame() {
   stopCountdown();
-  const totalScore = Math.round(speedScore + profitScore);
-  saveLeaderboard({ name: playerName, score: totalScore, speedScore: Math.round(speedScore), profitScore: Math.round(profitScore), date: Date.now() });
+  const safeScore = Math.max(0, Math.round(score));
+  const safeProfit = Math.round(totalProfit);
+  saveLeaderboard({ name: playerName, score: safeScore, profit: safeProfit, market: MARKET_CONFIG[selectedMarket].label, date: Date.now() });
 
   finalPlayer.textContent = `Player: ${playerName}`;
-  finalSpeed.textContent = `Speed Score: ${Math.round(speedScore)}`;
-  finalProfit.textContent = `Profit Score: ${Math.round(profitScore)}`;
-  finalScore.textContent = `Total Score: ${totalScore}`;
-  rating.textContent = finalRatingTitle(totalScore);
-  summary.textContent = finalFlavorLine(totalScore, Math.round(profitScore));
+  finalMarket.textContent = `Market: ${MARKET_CONFIG[selectedMarket].label}`;
+  finalScore.textContent = `Score: ${safeScore}`;
+  finalProfit.textContent = `Profit: ${safeProfit >= 0 ? "+" : "-"}$${Math.abs(safeProfit)}`;
+
+  const endingText = performanceMessage(safeScore, safeProfit);
+  rating.textContent = endingText.rating;
+  summary.textContent = endingText.summary;
 
   renderLeaderboards();
   renderScreen(SCREEN.END);
 }
 
-function finalRatingTitle(total) {
-  if (total < 1500) return "Crate Scout";
-  if (total < 2600) return "Margin Hunter";
-  if (total < 3600) return "Flip Commander";
-  return "Flip Wizard Supreme";
-}
-
-function finalFlavorLine(total, profit) {
-  if (total < 1500) return `You cleared $${profit} in flips. Keep sharpening your reads.`;
-  if (total < 2600) return `Fast hands. Sharp margins. You cleared $${profit}.`;
-  if (total < 3600) return `You spotted the money others missed and banked $${profit}.`;
-  return `Five rounds conquered. You stacked $${profit} and ruled the market.`;
+function performanceMessage(finalScoreValue, finalProfitValue) {
+  const blend = finalScoreValue + finalProfitValue * 4;
+  if (blend >= 2500 && finalProfitValue >= 240) {
+    return { rating: "Master Flipper", summary: "You are a master flipper. You could open a record store." };
+  }
+  if (blend >= 1650 && finalProfitValue >= 120) {
+    return { rating: "Crate Cash Operator", summary: "You made beer money and 7-inch money." };
+  }
+  if (blend >= 900 && finalProfitValue >= 20) {
+    return { rating: "Collector Energy", summary: "Maybe you are better off buying and listening." };
+  }
+  if (blend >= 350 && finalProfitValue > -80) {
+    return { rating: "Needs Regrading", summary: "Better start reading your copies of Goldmine again." };
+  }
+  return { rating: "Day Job Locked In", summary: "You are not a flipper. Stick to your day job." };
 }
 
 function saveLeaderboard(entry) {
@@ -512,9 +482,7 @@ function saveLeaderboard(entry) {
 
 function readLeaderboard() {
   const raw = localStorage.getItem(LEADERBOARD_KEY);
-  if (!raw) {
-    return [];
-  }
+  if (!raw) return [];
   try {
     const parsed = JSON.parse(raw);
     return Array.isArray(parsed) ? parsed : [];
@@ -534,7 +502,8 @@ function renderLeaderboardList(target, entries) {
 
   entries.forEach((entry) => {
     const li = document.createElement("li");
-    li.textContent = `${entry.name} — ${entry.score}`;
+    const signedProfit = `${entry.profit >= 0 ? "+" : "-"}$${Math.abs(entry.profit || 0)}`;
+    li.textContent = `${entry.name} — ${entry.score} — ${signedProfit}`;
     target.appendChild(li);
   });
 }
@@ -550,28 +519,24 @@ function clearLeaderboard() {
   renderLeaderboards();
 }
 
-function resetGame() {
-  stopCountdown();
-  clearPendingTransition();
-  resetGameState();
-  renderScreen(SCREEN.HOME);
-  renderLeaderboards();
-}
-
-function resetGameState() {
+function resetRunState() {
   rounds = [];
   currentRoundIndex = 0;
   pendingAnnouncementRoundIndex = 0;
   currentCard = 0;
-  totalCardIndex = 0;
-  speedScore = 0;
-  profitScore = 0;
-  streak = 0;
   answerLocked = false;
+  score = 0;
+  totalProfit = 0;
+  streak = 0;
   timeRemaining = ROUND_SECONDS;
-  renderScoreStrip();
-  timerText.textContent = `Timer ${ROUND_SECONDS.toFixed(1)}s`;
-  scoreFeedback.classList.add("hidden");
+  clearPendingTransition();
+  stopCountdown();
+}
+
+function resetGame() {
+  resetRunState();
+  renderLeaderboards();
+  renderScreen(SCREEN.HOME);
 }
 
 function clearPendingTransition() {
@@ -581,8 +546,13 @@ function clearPendingTransition() {
   }
 }
 
-function getPlayerName() {
-  return playerNameInput.value.trim() || "Anonymous";
+function shuffled(arr) {
+  const clone = [...arr];
+  for (let i = clone.length - 1; i > 0; i -= 1) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [clone[i], clone[j]] = [clone[j], clone[i]];
+  }
+  return clone;
 }
 
 function setupHomeHeroFallback() {
@@ -594,11 +564,10 @@ startBtn.addEventListener("click", startingNewGame);
 startRoundBtn.addEventListener("click", beginAnnouncedRound);
 yesBtn.addEventListener("click", () => handleAnswer("Yes"));
 noBtn.addEventListener("click", () => handleAnswer("No"));
+continueRoundBtn.addEventListener("click", continueAfterInterstitial);
 playAgainBtn.addEventListener("click", resetGame);
 clearLeaderboardBtn.addEventListener("click", clearLeaderboard);
-continueRoundBtn.addEventListener("click", continueAfterInterstitial);
 
 setupHomeHeroFallback();
 renderScreen(SCREEN.HOME);
-resetGameState();
 renderLeaderboards();
