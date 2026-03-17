@@ -105,7 +105,7 @@ p {
 }
 
 .hidden {
-  display: none;
+  display: none !important;
 }
 
 .eyebrow {
@@ -172,7 +172,7 @@ p {
 }
 
 .cover-fallback.hidden {
-  display: none;
+  display: none !important;
 }
 
 .tile-artist {
@@ -408,7 +408,7 @@ button:disabled {
 }
 
 .interstitial.hidden {
-  display: none;
+  display: none !important;
 }
 
 .interstitial-card {
