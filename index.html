@@ -12,8 +12,8 @@
 
       <section id="intro" class="panel intro-panel">
         <div id="homeHero" class="home-hero" role="img" aria-label="Flip Wizard game preview">
-          <img id="homeHeroImage" class="home-hero-image" alt="Flip Wizard landing hero" src="images/home-hero.jpg" />
-          <div id="homeHeroFallback" class="home-hero-fallback hidden" aria-hidden="true">
+          <img id="homeHeroImage" class="home-hero-image" alt="Flip Wizard landing hero" src="" />
+          <div id="homeHeroFallback" class="home-hero-fallback" aria-hidden="true">
             <p>Dig crates. Trust your gut. Build your score.</p>
           </div>
         </div>
@@ -51,12 +51,14 @@
           <p id="roundLabel" class="round-pill"></p>
         </div>
 
-        <div class="status-row">
+        <div class="status-row expanded">
           <p id="cardCount" class="pill"></p>
           <p id="totalProgress" class="pill"></p>
-          <p id="score" class="pill"></p>
-          <p id="streak" class="pill"></p>
           <p id="timer" class="pill timer-pill"></p>
+          <p id="streak" class="pill"></p>
+          <p id="speedScore" class="pill"></p>
+          <p id="profitScore" class="pill"></p>
+          <p id="score" class="pill headline-pill"></p>
         </div>
 
         <article id="recordCard" class="record-card">
@@ -81,6 +83,8 @@
           </div>
         </article>
 
+        <div id="scoreFeedback" class="score-feedback hidden" aria-live="polite"></div>
+
         <div id="bottomBannerAdSlot" class="ad-slot banner-slot" role="complementary" aria-label="Sponsored ad space">
           <div class="ad-copy-wrap">
             <span class="ad-chip">Sponsored</span>
@@ -91,8 +95,10 @@
 
       <section id="result" class="panel hidden" aria-live="polite">
         <h2>Run Complete</h2>
-        <p id="finalScore" class="final-score"></p>
         <p id="finalPlayer" class="summary"></p>
+        <p id="finalSpeed" class="final-breakdown"></p>
+        <p id="finalProfit" class="final-breakdown"></p>
+        <p id="finalScore" class="final-score"></p>
         <p id="rating" class="rating"></p>
         <p id="summary" class="summary"></p>
 
@@ -110,8 +116,9 @@
 
     <section id="betweenRoundInterstitial" class="interstitial hidden" aria-live="polite" role="dialog" aria-label="Sponsored transition space">
       <div class="interstitial-card">
-        <p class="eyebrow">Round One complete</p>
+        <p id="interstitialEyebrow" class="eyebrow"></p>
         <h2>Sponsored Break</h2>
+        <p id="roundSummaryLine" class="announcement-body"></p>
         <div id="interstitialAdSlot" class="ad-slot interstitial-slot">
           <div class="ad-copy-wrap">
             <span class="ad-chip">Sponsored</span>
