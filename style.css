@@ -20,7 +20,7 @@ body {
   background: var(--bg);
   color: var(--text);
   font-family: "Inter", "SF Pro Text", "Segoe UI", Arial, sans-serif;
-  padding: 20px 14px 32px;
+  padding: 16px 12px 24px;
 }
 
 .app-shell {
@@ -40,8 +40,8 @@ h3 {
 }
 
 .panel {
-  margin-top: 16px;
-  padding: 18px;
+  margin-top: 14px;
+  padding: 14px;
   border-radius: 24px;
   background: var(--surface);
   box-shadow: var(--shadow);
@@ -57,14 +57,8 @@ h3 {
   font-weight: 700;
 }
 
-.countdown-copy {
-  margin: 8px 0 0;
-  font-weight: 700;
-  letter-spacing: 0.02em;
-}
-
 .round-row {
-  margin-bottom: 10px;
+  margin: 8px 0;
 }
 
 .round-pill {
@@ -101,18 +95,18 @@ h3 {
 
 .status-row {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 8px;
-  margin: 12px 0 14px;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 6px;
+  margin: 10px 0 12px;
 }
 
 .pill {
   margin: 0;
-  padding: 8px 10px;
+  padding: 7px 8px;
   border: 1px solid var(--border);
   border-radius: 999px;
   text-align: center;
-  font-size: 0.82rem;
+  font-size: 0.72rem;
   font-weight: 700;
   color: var(--muted);
   background: #fbfbfd;
@@ -125,19 +119,14 @@ h3 {
 .record-card {
   border: 1px solid var(--border);
   border-radius: 20px;
-  padding: 14px;
-  transition: opacity 120ms ease;
-}
-
-.record-card.transitioning {
-  opacity: 0.78;
+  padding: 12px;
 }
 
 .album-tile {
-  width: min(100%, 340px);
+  width: min(100%, 300px);
   aspect-ratio: 1 / 1;
   border-radius: 18px;
-  margin: 0 auto 16px;
+  margin: 0 auto 12px;
   overflow: hidden;
   position: relative;
   box-shadow: 0 14px 30px rgba(17, 24, 39, 0.18);
@@ -154,7 +143,7 @@ h3 {
 .cover-fallback {
   position: absolute;
   inset: 0;
-  padding: 24px;
+  padding: 20px;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -169,19 +158,19 @@ h3 {
 }
 
 .tile-artist {
-  font-size: 1.6rem;
+  font-size: 1.3rem;
   font-weight: 700;
   line-height: 1.2;
 }
 
 .tile-title {
   margin-top: 8px;
-  font-size: 1.2rem;
+  font-size: 1rem;
 }
 
 .record-meta {
   display: grid;
-  gap: 10px;
+  gap: 8px;
 }
 
 .meta-item {
@@ -202,21 +191,21 @@ h3 {
 .action-row {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 12px;
-  margin-top: 18px;
+  gap: 10px;
+  margin-top: 14px;
 }
 
 button {
   cursor: pointer;
   border: 0;
   border-radius: 14px;
-  font-size: 1.05rem;
+  font-size: 1rem;
   font-weight: 700;
-  padding: 14px 16px;
+  padding: 13px 14px;
 }
 
 .primary-btn {
-  margin-top: 16px;
+  margin-top: 12px;
   width: 100%;
   background: var(--accent);
   color: white;
@@ -224,7 +213,7 @@ button {
 
 .answer-btn {
   color: #fff;
-  min-height: 54px;
+  min-height: 52px;
 }
 
 .answer-btn.yes {
@@ -242,7 +231,7 @@ button:disabled {
 
 .ad-slot {
   border: 1px solid #dbeafe;
-  background: linear-gradient(180deg, #eff6ff, #f8fbff);
+  background: linear-gradient(180deg, #f8fbff, #eff6ff);
   border-radius: 14px;
   display: flex;
   align-items: center;
@@ -250,13 +239,21 @@ button:disabled {
 }
 
 .banner-slot {
-  margin-top: 14px;
-  min-height: 62px;
+  min-height: 56px;
+}
+
+.top-banner-slot {
+  margin-bottom: 10px;
+}
+
+#bottomBannerAdSlot {
+  margin-top: 12px;
 }
 
 .interstitial-slot {
-  width: min(92vw, 360px);
-  min-height: 104px;
+  width: 100%;
+  min-height: 110px;
+  margin-top: 10px;
 }
 
 .ad-copy-wrap {
@@ -267,7 +264,7 @@ button:disabled {
 
 .ad-chip {
   color: #1d4ed8;
-  font-size: 0.74rem;
+  font-size: 0.68rem;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.08em;
@@ -275,13 +272,13 @@ button:disabled {
 
 .ad-caption {
   color: #2563eb;
-  font-size: 0.95rem;
+  font-size: 0.9rem;
   font-weight: 600;
 }
 
 .final-score {
   margin: 14px 0 8px;
-  font-size: 1.4rem;
+  font-size: 1.35rem;
   font-weight: 700;
 }
 
@@ -343,28 +340,21 @@ button:disabled {
 .interstitial {
   position: fixed;
   inset: 0;
-  background: rgba(255, 255, 255, 0.7);
+  background: rgba(255, 255, 255, 0.78);
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 50;
   backdrop-filter: blur(2px);
+  padding: 14px;
 }
 
-@media (max-width: 480px) {
-  body {
-    padding: 14px 10px 24px;
-  }
-
-  .panel {
-    padding: 14px;
-  }
-
-  .tile-artist {
-    font-size: 1.45rem;
-  }
-
-  .tile-title {
-    font-size: 1.1rem;
-  }
+.interstitial-card {
+  width: min(94vw, 430px);
+  background: #fff;
+  border-radius: 18px;
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow);
+  padding: 16px;
+  text-align: center;
 }

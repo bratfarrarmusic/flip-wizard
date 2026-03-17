@@ -11,10 +11,10 @@
       <h1>Flip Wizard</h1>
 
       <section id="intro" class="panel intro-panel">
-        <p class="eyebrow">Round One: Local Op-Shop</p>
+        <p class="eyebrow">Two rounds. Ten cards. One leaderboard.</p>
         <h2>Can You Flip Them?</h2>
-        <p>These are all records in VG+/VG+. Can you flip them?</p>
-        <p class="countdown-copy">3–2–1 GO!</p>
+        <p><strong>Round One: Local Op-Shop</strong><br />These are all records in VG+/VG+. Can you flip them?<br />3–2–1 GO!</p>
+        <p><strong>Round Two: Sunday Market</strong><br />Fresh crates, mixed sellers, more price chaos.<br />Can you still spot the flips?<br />3–2–1 GO!</p>
 
         <label class="input-label" for="playerName">Enter your name</label>
         <input id="playerName" class="name-input" type="text" maxlength="20" placeholder="Anonymous" autocomplete="nickname" />
@@ -29,12 +29,20 @@
       </section>
 
       <section id="game" class="panel hidden" aria-live="polite">
+        <div id="topBannerAdSlot" class="ad-slot banner-slot top-banner-slot" role="complementary" aria-label="Sponsored ad space">
+          <div class="ad-copy-wrap">
+            <span class="ad-chip">Sponsored</span>
+            <span class="ad-caption">Ad space</span>
+          </div>
+        </div>
+
         <div class="round-row">
-          <p class="round-pill">Round One: Local Op-Shop</p>
+          <p id="roundLabel" class="round-pill"></p>
         </div>
 
         <div class="status-row">
           <p id="cardCount" class="pill"></p>
+          <p id="totalProgress" class="pill"></p>
           <p id="score" class="pill"></p>
           <p id="streak" class="pill"></p>
           <p id="timer" class="pill timer-pill"></p>
@@ -61,7 +69,7 @@
           </div>
         </article>
 
-        <div id="bannerAdSlot" class="ad-slot banner-slot" role="complementary" aria-label="Sponsored ad space">
+        <div id="bottomBannerAdSlot" class="ad-slot banner-slot" role="complementary" aria-label="Sponsored ad space">
           <div class="ad-copy-wrap">
             <span class="ad-chip">Sponsored</span>
             <span class="ad-caption">Ad space</span>
@@ -70,7 +78,7 @@
       </section>
 
       <section id="result" class="panel hidden" aria-live="polite">
-        <h2>Round Complete</h2>
+        <h2>Run Complete</h2>
         <p id="finalScore" class="final-score"></p>
         <p id="finalPlayer" class="summary"></p>
         <p id="rating" class="rating"></p>
@@ -88,14 +96,20 @@
       </section>
     </main>
 
-    <div id="interstitial" class="interstitial hidden" aria-live="polite" role="status" aria-label="Sponsored transition space">
-      <div id="interstitialAdSlot" class="ad-slot interstitial-slot">
-        <div class="ad-copy-wrap">
-          <span class="ad-chip">Sponsored</span>
-          <span class="ad-caption">Ad space</span>
+    <section id="betweenRoundInterstitial" class="interstitial hidden" aria-live="polite" role="dialog" aria-label="Sponsored transition space">
+      <div class="interstitial-card">
+        <p class="eyebrow">Round One complete</p>
+        <h2>Round Two: Sunday Market</h2>
+        <p>Fresh crates, mixed sellers, more price chaos.<br />Can you still spot the flips?<br />3–2–1 GO!</p>
+        <div id="interstitialAdSlot" class="ad-slot interstitial-slot">
+          <div class="ad-copy-wrap">
+            <span class="ad-chip">Sponsored</span>
+            <span class="ad-caption">Ad space</span>
+          </div>
         </div>
+        <button id="continueRoundBtn" class="primary-btn">Continue</button>
       </div>
-    </div>
+    </section>
 
     <script src="script.js"></script>
   </body>
