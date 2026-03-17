@@ -11,23 +11,41 @@
       <h1>Flip Wizard</h1>
 
       <section id="intro" class="panel intro-panel">
-        <p class="eyebrow">Version 2</p>
+        <p class="eyebrow">Version 3</p>
         <h2>Fast Record Flips</h2>
-        <p>Trust your instinct. Swipe-era pacing. One card, one call.</p>
+        <p>Trust your instinct. Quick calls. Big score runs.</p>
+
+        <label class="input-label" for="playerName">Enter your name</label>
+        <input id="playerName" class="name-input" type="text" maxlength="20" placeholder="Anonymous" autocomplete="nickname" />
         <button id="startBtn" class="primary-btn">Start Game</button>
+
+        <div class="leaderboard-panel compact">
+          <div class="leaderboard-head">
+            <h3>Top Flippers</h3>
+          </div>
+          <ol id="introLeaderboard" class="leaderboard-list"></ol>
+        </div>
       </section>
 
       <section id="game" class="panel hidden" aria-live="polite">
+        <div id="bannerAdSlot" class="ad-slot banner-slot" role="complementary" aria-label="Sponsored space">
+          <span class="ad-chip">Sponsored space</span>
+        </div>
+
         <div class="status-row">
           <p id="cardCount" class="pill"></p>
           <p id="score" class="pill"></p>
+          <p id="streak" class="pill"></p>
           <p id="timer" class="pill timer-pill"></p>
         </div>
 
-        <article class="record-card">
+        <article id="recordCard" class="record-card">
           <div id="albumTile" class="album-tile" role="img" aria-label="Album cover">
-            <span id="tileArtist" class="tile-artist"></span>
-            <span id="tileTitle" class="tile-title"></span>
+            <img id="coverImage" class="cover-image" alt="Record cover" />
+            <div id="coverFallback" class="cover-fallback" aria-hidden="true">
+              <span id="tileArtist" class="tile-artist"></span>
+              <span id="tileTitle" class="tile-title"></span>
+            </div>
           </div>
 
           <div class="record-meta">
@@ -46,14 +64,26 @@
       <section id="result" class="panel hidden" aria-live="polite">
         <h2>Round Complete</h2>
         <p id="finalScore" class="final-score"></p>
-        <p id="summary" class="summary"></p>
+        <p id="finalPlayer" class="summary"></p>
         <p id="rating" class="rating"></p>
+        <p id="summary" class="summary"></p>
+
+        <div class="leaderboard-panel">
+          <div class="leaderboard-head">
+            <h3>Leaderboard</h3>
+            <button id="clearLeaderboardBtn" class="text-btn" type="button">Clear</button>
+          </div>
+          <ol id="resultLeaderboard" class="leaderboard-list"></ol>
+        </div>
+
         <button id="playAgainBtn" class="primary-btn">Play Again</button>
       </section>
     </main>
 
     <div id="interstitial" class="interstitial hidden" aria-live="polite" role="status">
-      <p>Loading next record...</p>
+      <div id="interstitialAdSlot" class="ad-slot interstitial-slot">
+        <span class="ad-chip">Sponsored break</span>
+      </div>
     </div>
 
     <script src="script.js"></script>
