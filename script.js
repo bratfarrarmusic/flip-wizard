@@ -3,7 +3,8 @@ const NEXT_CARD_DELAY_MS = 350;
 const LEADERBOARD_KEY = "flipWizardLeaderboardV5";
 const LEADERBOARD_LIMIT = 8;
 const CARDS_PER_ROUND = 8;
-const TARGET_PROFIT = 20;
+const DOUBLE_MONEY_MULTIPLIER = 2;
+const MIN_DOUBLE_PROFIT = 28;
 const GENERIC_RECORD_IMAGE = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 600 600'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0%25' stop-color='%232f4858'/%3E%3Cstop offset='100%25' stop-color='%2333658a'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='600' height='600' fill='url(%23g)'/%3E%3Ccircle cx='300' cy='300' r='180' fill='none' stroke='rgba(255,255,255,0.36)' stroke-width='8'/%3E%3Ccircle cx='300' cy='300' r='28' fill='rgba(255,255,255,0.55)'/%3E%3C/svg%3E";
 
 const SCREEN = {
@@ -23,7 +24,7 @@ const ROUND_CONFIG = [
     pricePressure: 0.94,
     variance: 0.13,
     gradeWeights: [0.17, 0.34, 0.31, 0.18],
-    announcementText: "All records are original presses.\nGoldmine Record/Sleeve grading affects value.\nYour call: flip only if you can clear at least $20 profit.",
+    announcementText: "All records are original presses.\nGoldmine Record/Sleeve grading affects value.\nYour call: can you double your money on these records?",
   },
   {
     key: "round-two-sunday-market",
@@ -33,7 +34,7 @@ const ROUND_CONFIG = [
     pricePressure: 1.0,
     variance: 0.14,
     gradeWeights: [0.2, 0.35, 0.29, 0.16],
-    announcementText: "All records are original presses, but condition still rules the deal.\nGoldmine Record/Sleeve grades shape what buyers will pay.\nHold out for flips that clear at least $20 profit.",
+    announcementText: "All records are original presses, but condition still rules the deal.\nGoldmine Record/Sleeve grades shape what buyers will pay.\nBack your eye only when the numbers can roughly double your money.",
   },
   {
     key: "round-three-garage-sale",
@@ -43,7 +44,7 @@ const ROUND_CONFIG = [
     pricePressure: 1.05,
     variance: 0.15,
     gradeWeights: [0.22, 0.36, 0.27, 0.15],
-    announcementText: "Original presses are on the table, but grading can kill value fast.\nWatch Goldmine Record/Sleeve condition closely before saying yes.\nOnly chase flips that clear at least $20 profit.",
+    announcementText: "Original presses are on the table, but grading can kill value fast.\nWatch Goldmine Record/Sleeve condition closely before saying yes.\nChase records where resale can at least double your buy price.",
   },
   {
     key: "round-four-antique-shop",
@@ -53,7 +54,7 @@ const ROUND_CONFIG = [
     pricePressure: 1.1,
     variance: 0.11,
     gradeWeights: [0.24, 0.37, 0.25, 0.14],
-    announcementText: "These are still original presses, priced by confident sellers.\nGoldmine Record/Sleeve grades decide if margin survives.\nSkip anything that cannot clear at least $20 profit.",
+    announcementText: "These are still original presses, priced by confident sellers.\nGoldmine Record/Sleeve grades decide if margin survives.\nOnly strike when condition and demand can double your money.",
   },
   {
     key: "round-five-record-fair",
@@ -63,15 +64,15 @@ const ROUND_CONFIG = [
     pricePressure: 1.16,
     variance: 0.1,
     gradeWeights: [0.24, 0.39, 0.24, 0.13],
-    announcementText: "Final push: original presses with the tightest margins.\nGoldmine Record/Sleeve grading is the difference maker.\nPick only flips that can clear at least $20 profit.",
+    announcementText: "Final push: original presses with the tightest margins.\nGoldmine Record/Sleeve grading is the difference maker.\nFinal call: pick only records that can realistically double your money.",
   },
 ];
 
 const MARKET_CONFIG = {
-  au: { label: "eBay Australia", saleMultiplier: 1.03, buyMultiplier: 1.2, roundBuyPressure: 0.04 },
-  us: { label: "eBay US", saleMultiplier: 1.1, buyMultiplier: 0.96, roundBuyPressure: -0.01 },
-  uk: { label: "eBay UK", saleMultiplier: 1.07, buyMultiplier: 1.0, roundBuyPressure: 0 },
-  eu: { label: "Germany / EU", saleMultiplier: 1.09, buyMultiplier: 1.05, roundBuyPressure: 0.01 },
+  au: { label: "eBay Australia", symbol: "$", saleMultiplier: 1.03, buyMultiplier: 1.2, roundBuyPressure: 0.04 },
+  us: { label: "eBay US", symbol: "$", saleMultiplier: 1.1, buyMultiplier: 0.96, roundBuyPressure: -0.01 },
+  uk: { label: "eBay UK", symbol: "£", saleMultiplier: 1.07, buyMultiplier: 1.0, roundBuyPressure: 0 },
+  eu: { label: "Germany / EU", symbol: "€", saleMultiplier: 1.09, buyMultiplier: 1.05, roundBuyPressure: 0.01 },
 };
 
 const gradeMultipliers = {
@@ -233,8 +234,8 @@ function calculatingMarketAdjustedLikelySaleValue(baseMedianValue, marketKey, re
 function generatingDisplayedBuyPrice(hiddenLikelySalePrice, round, marketKey) {
   const market = MARKET_CONFIG[marketKey];
   const spread = round.variance;
-  const under = hiddenLikelySalePrice * (0.56 - spread);
-  const over = hiddenLikelySalePrice * (1.13 + spread);
+  const under = hiddenLikelySalePrice * (0.47 - spread * 0.32);
+  const over = hiddenLikelySalePrice * (0.9 + spread * 0.22);
   const floor = Math.max(8, Math.round(under * market.buyMultiplier * round.pricePressure));
   const ceiling = Math.max(floor + 6, Math.round(over * market.buyMultiplier * (round.pricePressure + market.roundBuyPressure)));
   return Math.floor(Math.random() * (ceiling - floor + 1)) + floor;
@@ -244,8 +245,12 @@ function computingHiddenProfit(hiddenLikelySalePrice, displayedBuyPrice) {
   return hiddenLikelySalePrice - displayedBuyPrice;
 }
 
-function determiningCorrectAnswer(hiddenProfit) {
-  return hiddenProfit >= TARGET_PROFIT ? "Yes" : "No";
+function canDoubleMoney(hiddenLikelySalePrice, displayedBuyPrice, hiddenProfit) {
+  return hiddenLikelySalePrice >= displayedBuyPrice * DOUBLE_MONEY_MULTIPLIER && hiddenProfit >= MIN_DOUBLE_PROFIT;
+}
+
+function determiningCorrectAnswer(hiddenLikelySalePrice, displayedBuyPrice, hiddenProfit) {
+  return canDoubleMoney(hiddenLikelySalePrice, displayedBuyPrice, hiddenProfit) ? "Yes" : "No";
 }
 
 function buildRuntimeCard(card, round) {
@@ -253,7 +258,8 @@ function buildRuntimeCard(card, round) {
   const hiddenLikelySalePrice = calculatingMarketAdjustedLikelySaleValue(card.baseMedianValue, selectedMarket, recordGrade, sleeveGrade);
   const displayedBuyPrice = generatingDisplayedBuyPrice(hiddenLikelySalePrice, round, selectedMarket);
   const hiddenProfit = computingHiddenProfit(hiddenLikelySalePrice, displayedBuyPrice);
-  const correctAnswer = determiningCorrectAnswer(hiddenProfit);
+  const correctAnswer = determiningCorrectAnswer(hiddenLikelySalePrice, displayedBuyPrice, hiddenProfit);
+  const isDoubleFlip = correctAnswer === "Yes";
 
   return {
     ...card,
@@ -263,6 +269,7 @@ function buildRuntimeCard(card, round) {
     hiddenLikelySalePrice,
     hiddenProfit,
     correctAnswer,
+    isDoubleFlip,
   };
 }
 
@@ -290,12 +297,25 @@ function getCurrentRound() {
   return rounds[currentRoundIndex];
 }
 
+function currencySymbol() {
+  return MARKET_CONFIG[selectedMarket]?.symbol || "$";
+}
+
+function formatMoney(value) {
+  return `${currencySymbol()}${Math.abs(Math.round(value))}`;
+}
+
+function formatSignedMoney(value) {
+  const sign = value >= 0 ? "+" : "-";
+  return `${sign}${formatMoney(value)}`;
+}
+
 function renderingStrippedBackCardView(card) {
   const [artistLabel, titleLabel] = card.imageLabel.split("\n");
   artistText.textContent = card.artist;
   titleText.textContent = card.title;
   gradeLineText.textContent = `${card.recordGrade}/${card.sleeveGrade}`;
-  buyPriceText.textContent = `Buy Price: $${card.displayedBuyPrice}`;
+  buyPriceText.textContent = `Buy Price: ${currencySymbol()}${card.displayedBuyPrice}`;
   tileArtist.textContent = artistLabel || card.artist;
   tileTitle.textContent = titleLabel || card.title;
   roundLabel.textContent = getCurrentRound().title;
@@ -355,7 +375,7 @@ function stopCountdown() {
 }
 
 function computingScore(card, playerAnswer) {
-  const profitable = card.hiddenProfit >= TARGET_PROFIT;
+  const profitable = card.isDoubleFlip;
   const speedBonus = Math.round(timeRemaining * 10);
 
   if (playerAnswer === "Yes") {
@@ -380,7 +400,7 @@ function applyingProfitAndLoss(card, playerAnswer) {
   let delta = 0;
   if (playerAnswer === "Yes") {
     delta = card.hiddenProfit;
-  } else if (card.hiddenProfit >= TARGET_PROFIT) {
+  } else if (card.isDoubleFlip) {
     delta = -5;
   }
 
@@ -437,9 +457,8 @@ function calculatingRoundScore(round) {
 function renderingRoundEndProfitSummary(round) {
   interstitialEyebrow.textContent = `${round.title} complete`;
   const roundScore = Math.max(0, Math.round(calculatingRoundScore(round)));
-  const sign = round.roundProfit >= 0 ? "+" : "-";
   roundScoreLine.textContent = `Round Score: ${roundScore}`;
-  roundSummaryLine.textContent = `Round Profit: ${sign}$${Math.abs(round.roundProfit)}`;
+  roundSummaryLine.textContent = `Round Profit: ${formatSignedMoney(round.roundProfit)}`;
 }
 
 function showingBetweenRoundAds(round) {
@@ -470,7 +489,7 @@ function endingGame() {
   finalPlayer.textContent = `Player: ${playerName}`;
   finalMarket.textContent = `Market: ${MARKET_CONFIG[selectedMarket].label}`;
   finalScore.textContent = `Score: ${safeScore}`;
-  finalProfit.textContent = `Profit: ${safeProfit >= 0 ? "+" : "-"}$${Math.abs(safeProfit)}`;
+  finalProfit.textContent = `Profit: ${formatSignedMoney(safeProfit)}`;
 
   const endingText = performanceMessage(safeScore, safeProfit);
   rating.textContent = endingText.rating;
@@ -526,7 +545,9 @@ function renderLeaderboardList(target, entries) {
 
   entries.forEach((entry) => {
     const li = document.createElement("li");
-    const signedProfit = `${entry.profit >= 0 ? "+" : "-"}$${Math.abs(entry.profit || 0)}`;
+    const marketKey = Object.keys(MARKET_CONFIG).find((key) => MARKET_CONFIG[key].label === entry.market) || selectedMarket;
+    const symbol = MARKET_CONFIG[marketKey]?.symbol || "$";
+    const signedProfit = `${entry.profit >= 0 ? "+" : "-"}${symbol}${Math.abs(entry.profit || 0)}`;
     li.textContent = `${entry.name} — ${entry.score} — ${signedProfit}`;
     target.appendChild(li);
   });
