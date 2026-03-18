@@ -6,6 +6,14 @@ const CARDS_PER_ROUND = 8;
 const DOUBLE_MONEY_MULTIPLIER = 2;
 const MIN_DOUBLE_PROFIT = 28;
 const HOME_HERO_IMAGE = "images/hero.png";
+const PRELOAD_IMAGE_PATHS = [
+  HOME_HERO_IMAGE,
+  "images/round-op-shop.png",
+  "images/round-sunday-market.png",
+  "images/round-yard-sale.png",
+  "images/round-antique-shop.png",
+  "images/round-record-fair.png",
+];
 
 const SCREEN = {
   HOME: "home",
@@ -165,6 +173,15 @@ let score = 0;
 let totalProfit = 0;
 let streak = 0;
 
+function preloadImages() {
+  PRELOAD_IMAGE_PATHS.forEach((src) => {
+    const image = new Image();
+    image.decoding = "async";
+    image.src = src;
+  });
+}
+
+preloadImages();
 homeHeroImage.src = HOME_HERO_IMAGE;
 
 function renderScreen(screen) {
@@ -351,12 +368,16 @@ function renderCurrentCard() {
 }
 
 function setCoverImage(card) {
-  coverImage.src = "";
-  coverImage.alt = `${card.artist} — ${card.title} cover`;
-  coverFallback.classList.remove("hidden");
   coverImage.onload = () => coverFallback.classList.add("hidden");
   coverImage.onerror = () => coverFallback.classList.remove("hidden");
+  coverImage.alt = "";
   coverImage.src = card.imageSrc;
+
+  if (coverImage.complete && coverImage.naturalWidth > 0) {
+    coverFallback.classList.add("hidden");
+  } else {
+    coverFallback.classList.remove("hidden");
+  }
 }
 
 function updatingTimerBadge() {
