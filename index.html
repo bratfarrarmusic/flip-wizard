@@ -4,6 +4,12 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Flip Wizard</title>
+    <link rel="preload" href="images/hero.png" as="image" />
+    <link rel="preload" href="images/round-op-shop.png" as="image" />
+    <link rel="preload" href="images/round-sunday-market.png" as="image" />
+    <link rel="preload" href="images/round-yard-sale.png" as="image" />
+    <link rel="preload" href="images/round-antique-shop.png" as="image" />
+    <link rel="preload" href="images/round-record-fair.png" as="image" />
     <link rel="stylesheet" href="style.css" />
   </head>
   <body>
@@ -12,7 +18,8 @@
 
       <section id="intro" class="panel intro-panel">
         <div id="homeHero" class="home-hero" role="img" aria-label="Flip Wizard game preview">
-          <img id="homeHeroImage" class="home-hero-image" alt="Flip Wizard landing hero" src="" />
+          <img id="homeHeroImage" class="home-hero-image" alt="" src="images/hero.png" aria-hidden="true" />
+          <div class="home-hero-overlay" aria-hidden="true"></div>
           <div id="homeHeroFallback" class="home-hero-fallback" aria-hidden="true">
             <div class="hero-explainer">
               <p>You are buying original press records in real-world style markets.</p>
