@@ -210,8 +210,15 @@ function renderScreen(screen) {
     .join(" ");
 }
 
-function createAdMarkup(slotId) {
-  return `<ins class="adsbygoogle" style="display:block" data-ad-client="${ADSENSE_CLIENT_ID}" data-ad-slot="${slotId}" data-ad-format="horizontal" data-full-width-responsive="true"></ins>`;
+const AD_VARIANT_CLASS = {
+  top: "ad-frame-top",
+  bottom: "ad-frame-bottom",
+  card: "ad-frame-card"
+};
+
+function createAdMarkup(slotId, variant = "card") {
+  const frameClass = AD_VARIANT_CLASS[variant] || AD_VARIANT_CLASS.card;
+  return `<div class="ad-frame ${frameClass}"><ins class="adsbygoogle" style="display:block;width:100%;height:100%" data-ad-client="${ADSENSE_CLIENT_ID}" data-ad-slot="${slotId}" data-ad-format="horizontal" data-full-width-responsive="true"></ins></div>`;
 }
 
 function initialiseAdContainer(container) {
@@ -232,36 +239,38 @@ function initialiseAdContainer(container) {
   }
 }
 
-function renderAdPlacement(container, slotId) {
+function renderAdPlacement(container, slotId, variant = "card") {
   if (!container || !slotId) {
     return;
   }
 
   const currentSlotId = container.dataset.currentAdSlot;
+  const currentVariant = container.dataset.currentAdVariant;
   const existingAd = container.querySelector(".adsbygoogle");
-  if (currentSlotId !== slotId || !existingAd) {
-    container.innerHTML = createAdMarkup(slotId);
+  if (currentSlotId !== slotId || currentVariant !== variant || !existingAd) {
+    container.innerHTML = createAdMarkup(slotId, variant);
     container.dataset.currentAdSlot = slotId;
+    container.dataset.currentAdVariant = variant;
   }
 
   initialiseAdContainer(container);
 }
 
 function renderRoundAnnouncementAd(roundIndex) {
-  renderAdPlacement(roundIntroAdSlot, AD_SLOTS.roundIntro[roundIndex]);
+  renderAdPlacement(roundIntroAdSlot, AD_SLOTS.roundIntro[roundIndex], "card");
 }
 
 function renderGameplayAds(roundIndex) {
-  renderAdPlacement(topBannerAdSlot, AD_SLOTS.gameplayTop[roundIndex]);
-  renderAdPlacement(bottomBannerAdSlot, AD_SLOTS.gameplayBottom[roundIndex]);
+  renderAdPlacement(topBannerAdSlot, AD_SLOTS.gameplayTop[roundIndex], "top");
+  renderAdPlacement(bottomBannerAdSlot, AD_SLOTS.gameplayBottom[roundIndex], "bottom");
 }
 
 function renderEndOfRoundAd(roundIndex) {
-  renderAdPlacement(interstitialAdSlot, AD_SLOTS.endOfRound[roundIndex]);
+  renderAdPlacement(interstitialAdSlot, AD_SLOTS.endOfRound[roundIndex], "card");
 }
 
 function renderFinalResultAd(roundIndex) {
-  renderAdPlacement(resultAdSlot, AD_SLOTS.endOfRound[roundIndex]);
+  renderAdPlacement(resultAdSlot, AD_SLOTS.endOfRound[roundIndex], "card");
 }
 
 function getPlayerName() {

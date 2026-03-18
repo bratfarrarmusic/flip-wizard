@@ -346,18 +346,42 @@ button:disabled {
   border: 1px solid #dbeafe;
   background: linear-gradient(180deg, #f8fbff, #eff6ff);
   border-radius: 14px;
+  width: 100%;
+  max-width: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
   overflow: hidden;
 }
 
-.ad-slot .adsbygoogle {
+.ad-frame {
   width: 100%;
+  max-width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  flex: 1 1 auto;
+}
+
+.ad-frame-top,
+.ad-frame-bottom {
+  height: 50px;
+}
+
+.ad-frame-card {
+  height: 64px;
+}
+
+.ad-slot .adsbygoogle {
+  display: block;
+  width: 100% !important;
+  height: 100% !important;
+  max-height: 100%;
 }
 
 .banner-slot {
-  min-height: 56px;
+  height: 50px;
 }
 
 .top-banner-slot {
@@ -369,13 +393,11 @@ button:disabled {
 }
 
 .round-intro-ad-slot {
-  width: 100%;
-  min-height: 72px;
+  height: 64px;
 }
 
 .large-ad-slot {
-  width: 100%;
-  min-height: 148px;
+  height: 64px;
 }
 
 .result-ad-slot {
@@ -383,8 +405,7 @@ button:disabled {
 }
 
 .interstitial-slot {
-  width: 100%;
-  min-height: 110px;
+  height: 64px;
   margin-top: 10px;
 }
 
