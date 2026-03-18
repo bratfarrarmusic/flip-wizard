@@ -355,6 +355,8 @@ button:disabled {
 }
 
 .ad-frame {
+  --ad-width: 100%;
+  --ad-height: 100%;
   width: 100%;
   max-width: 100%;
   display: flex;
@@ -366,22 +368,23 @@ button:disabled {
 
 .ad-frame-top,
 .ad-frame-bottom {
-  height: 50px;
+  min-height: 50px;
 }
 
 .ad-frame-card {
-  height: 64px;
+  min-height: 64px;
 }
 
 .ad-slot .adsbygoogle {
   display: block;
-  width: 100% !important;
-  height: 100% !important;
+  width: var(--ad-width) !important;
+  height: var(--ad-height) !important;
+  max-width: 100%;
   max-height: 100%;
 }
 
 .banner-slot {
-  height: 50px;
+  min-height: 50px;
 }
 
 .top-banner-slot {
@@ -393,11 +396,11 @@ button:disabled {
 }
 
 .round-intro-ad-slot {
-  height: 64px;
+  min-height: 64px;
 }
 
 .large-ad-slot {
-  height: 64px;
+  min-height: 64px;
 }
 
 .result-ad-slot {
@@ -405,7 +408,7 @@ button:disabled {
 }
 
 .interstitial-slot {
-  height: 64px;
+  min-height: 64px;
   margin-top: 10px;
 }
 
@@ -506,5 +509,61 @@ button:disabled {
 
   .card-overlay {
     padding: 58px 16px 44px;
+  }
+}
+
+
+@media (max-width: 480px) {
+  .ad-size-gameplay-top,
+  .ad-size-gameplay-bottom {
+    --ad-width: var(--ad-mobile-width);
+    --ad-height: var(--ad-mobile-height);
+  }
+
+  .ad-size-card {
+    --ad-width: var(--ad-mobile-width);
+    --ad-height: var(--ad-mobile-height);
+  }
+
+  .top-banner-slot,
+  #bottomBannerAdSlot {
+    min-height: 50px;
+  }
+
+  .round-intro-ad-slot,
+  .large-ad-slot,
+  .interstitial-slot {
+    min-height: 100px;
+  }
+}
+
+@media (min-width: 481px) and (max-width: 1024px) {
+  .ad-size-gameplay-top,
+  .ad-size-gameplay-bottom,
+  .ad-size-card {
+    --ad-width: var(--ad-tablet-width);
+    --ad-height: var(--ad-tablet-height);
+  }
+
+  .top-banner-slot,
+  #bottomBannerAdSlot,
+  .round-intro-ad-slot,
+  .large-ad-slot,
+  .interstitial-slot {
+    min-height: 60px;
+  }
+}
+
+@media (min-width: 1025px) {
+  .ad-frame {
+    --ad-width: 100%;
+    --ad-height: 100%;
+  }
+
+  .ad-size-gameplay-top,
+  .ad-size-gameplay-bottom,
+  .ad-size-card {
+    --ad-width: var(--ad-desktop-width, 100%);
+    --ad-height: var(--ad-desktop-height, 100%);
   }
 }

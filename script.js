@@ -210,15 +210,52 @@ function renderScreen(screen) {
     .join(" ");
 }
 
-const AD_VARIANT_CLASS = {
-  top: "ad-frame-top",
-  bottom: "ad-frame-bottom",
-  card: "ad-frame-card"
+const AD_VARIANTS = {
+  top: {
+    frameClass: "ad-frame-top",
+    sizeClass: "ad-size-gameplay-top",
+    mobileWidth: 320,
+    mobileHeight: 50,
+    tabletWidth: 468,
+    tabletHeight: 60
+  },
+  bottom: {
+    frameClass: "ad-frame-bottom",
+    sizeClass: "ad-size-gameplay-bottom",
+    mobileWidth: 320,
+    mobileHeight: 50,
+    tabletWidth: 468,
+    tabletHeight: 60
+  },
+  card: {
+    frameClass: "ad-frame-card",
+    sizeClass: "ad-size-card",
+    mobileWidth: 320,
+    mobileHeight: 100,
+    tabletWidth: 468,
+    tabletHeight: 60
+  }
 };
 
+function getAdVariantConfig(variant = "card") {
+  return AD_VARIANTS[variant] || AD_VARIANTS.card;
+}
+
+function getAdInlineStyle() {
+  return "display:block;width:var(--ad-width);height:var(--ad-height)";
+}
+
+function shouldControlAdSize(config) {
+  return window.matchMedia("(max-width: 1024px)").matches || Boolean(config.desktopWidth && config.desktopHeight);
+}
+
 function createAdMarkup(slotId, variant = "card") {
-  const frameClass = AD_VARIANT_CLASS[variant] || AD_VARIANT_CLASS.card;
-  return `<div class="ad-frame ${frameClass}"><ins class="adsbygoogle" style="display:block;width:100%;height:100%" data-ad-client="${ADSENSE_CLIENT_ID}" data-ad-slot="${slotId}" data-ad-format="horizontal" data-full-width-responsive="true"></ins></div>`;
+  const config = getAdVariantConfig(variant);
+  const controlledSize = shouldControlAdSize(config);
+  const widthStyle = getAdInlineStyle();
+  const responsiveValue = controlledSize ? "false" : "true";
+
+  return `<div class="ad-frame ${config.frameClass} ${config.sizeClass}" style="--ad-mobile-width:${config.mobileWidth}px;--ad-mobile-height:${config.mobileHeight}px;--ad-tablet-width:${config.tabletWidth || config.mobileWidth}px;--ad-tablet-height:${config.tabletHeight || config.mobileHeight}px;${config.desktopWidth ? `--ad-desktop-width:${config.desktopWidth}px;` : ""}${config.desktopHeight ? `--ad-desktop-height:${config.desktopHeight}px;` : ""}"><ins class="adsbygoogle ${config.sizeClass}" style="${widthStyle}" data-ad-client="${ADSENSE_CLIENT_ID}" data-ad-slot="${slotId}" data-ad-format="horizontal" data-full-width-responsive="${responsiveValue}"></ins></div>`;
 }
 
 function initialiseAdContainer(container) {
@@ -246,11 +283,15 @@ function renderAdPlacement(container, slotId, variant = "card") {
 
   const currentSlotId = container.dataset.currentAdSlot;
   const currentVariant = container.dataset.currentAdVariant;
+  const currentControlledState = container.dataset.currentControlledState;
+  const nextControlledState = String(shouldControlAdSize(getAdVariantConfig(variant)));
   const existingAd = container.querySelector(".adsbygoogle");
-  if (currentSlotId !== slotId || currentVariant !== variant || !existingAd) {
+
+  if (currentSlotId !== slotId || currentVariant !== variant || currentControlledState != nextControlledState || !existingAd) {
     container.innerHTML = createAdMarkup(slotId, variant);
     container.dataset.currentAdSlot = slotId;
     container.dataset.currentAdVariant = variant;
+    container.dataset.currentControlledState = nextControlledState;
   }
 
   initialiseAdContainer(container);
@@ -734,3 +775,24 @@ clearLeaderboardBtn.addEventListener("click", clearLeaderboard);
 setupHomeHeroFallback();
 renderScreen(SCREEN.HOME);
 renderLeaderboards();
+
+
+window.addEventListener("resize", () => {
+  const activeRoundIndex = Math.max(0, currentRoundIndex - 1);
+
+  if (!gameSection.classList.contains("hidden") && AD_SLOTS.gameplayTop[activeRoundIndex] && AD_SLOTS.gameplayBottom[activeRoundIndex]) {
+    renderGameplayAds(activeRoundIndex);
+  }
+
+  if (!roundAnnouncementSection.classList.contains("hidden") && AD_SLOTS.roundIntro[activeRoundIndex]) {
+    renderRoundAnnouncementAd(activeRoundIndex);
+  }
+
+  if (!interstitialSection.classList.contains("hidden") && AD_SLOTS.endOfRound[activeRoundIndex]) {
+    renderEndOfRoundAd(activeRoundIndex);
+  }
+
+  if (!resultSection.classList.contains("hidden") && AD_SLOTS.endOfRound[activeRoundIndex]) {
+    renderFinalResultAd(activeRoundIndex);
+  }
+});
