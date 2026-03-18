@@ -17,6 +17,11 @@
     <main class="app-shell">
       <h1 id="appTitle">Flip Wizard</h1>
 
+      <nav class="site-nav" aria-label="Primary">
+        <button id="homeNavBtn" class="nav-btn is-active" type="button">Home</button>
+        <button id="howToPlayNavBtn" class="nav-btn" type="button">How to Play</button>
+      </nav>
+
       <section id="intro" class="panel intro-panel">
         <div id="homeHero" class="home-hero" role="img" aria-label="Flip Wizard game preview">
           <img id="homeHeroImage" class="home-hero-image" alt="" src="images/hero.png" aria-hidden="true" />
@@ -52,6 +57,39 @@
           </div>
           <ol id="introLeaderboard" class="leaderboard-list"></ol>
         </div>
+      </section>
+
+      <section id="howToPlay" class="panel content-panel hidden" aria-labelledby="howToPlayTitle">
+        <div class="content-panel-header">
+          <p class="eyebrow">Flip Wizard Guide</p>
+          <h2 id="howToPlayTitle">How to Play</h2>
+          <p class="content-lead">Learn how the game works before you start digging through the crates.</p>
+        </div>
+
+        <div class="content-body">
+          <h3>What Flip Wizard is</h3>
+          <p>Flip Wizard is a quick decision game about buying and selling records. Every round drops you into a different kind of record-hunting spot, from op shops to record fairs, and asks you to judge whether a record is worth buying at the price on screen. The goal is not just to find cool titles. It is to spot the records that leave enough room for a strong flip after condition and market value are taken into account.</p>
+
+          <h3>How each round works</h3>
+          <p>Each round gives you a short run of record cards. On every card, you see the artist, album title, record grade, sleeve grade, and the seller&apos;s asking price. When the round begins, the timer starts immediately, so you need to make your call while the clock is still running. After you answer, the game moves on to the next record automatically until the round ends.</p>
+
+          <h3>What the player is deciding</h3>
+          <p>Your job is simple: decide whether you would say yes to buying that record. In Flip Wizard, a good buy is not just any record that might make a profit. You are looking for records that can realistically double your money while still clearing the game&apos;s minimum profit target. If the numbers look strong enough, tap <strong>Yes</strong>. If the margin is too thin, too risky, or likely to miss the doubling mark, tap <strong>No</strong>.</p>
+
+          <h3>How record grading affects value</h3>
+          <p>Condition matters in every round. Flip Wizard uses Goldmine-style record and sleeve grades because collectors and buyers care about wear, marks, and presentation. A cleaner record and sleeve usually support a higher resale value, while lower grades drag that value down. Two copies of the same album can lead to very different results if one is graded EX and the other is only VG or G+.</p>
+
+          <h3>What the timer does</h3>
+          <p>The timer adds pressure to every decision. You only get a few seconds to make each call, so fast reading and quick judgement both matter. If time runs out, the game counts that card as a timeout, applies a score penalty, and moves on. Acting earlier can also help, because strong decisions made with time left on the clock earn a better score.</p>
+
+          <h3>How scoring and progress work</h3>
+          <p>You build your run across multiple rounds, with score and profit tracked from start to finish. Correct calls add points, and quick correct answers can add even more through a speed bonus. Saying yes to a truly profitable double-your-money record can raise both your score and your profit total. Saying yes to a weak deal, missing a strong flip, or timing out will slow your progress. At the end of the run, your total score, profit, and leaderboard result show how sharp your flipping instincts were.</p>
+
+          <h3>Entertainment note</h3>
+          <p>Flip Wizard is designed for entertainment and learning. It is a game about reading value signals and understanding how grading changes what a buyer might pay. It is not resale, collecting, or investment advice, and real-world record prices can change for many reasons.</p>
+        </div>
+
+        <button id="howToPlayStartBtn" class="primary-btn" type="button">Back to Home</button>
       </section>
 
       <section id="roundAnnouncement" class="panel round-announcement hidden" aria-live="polite">
