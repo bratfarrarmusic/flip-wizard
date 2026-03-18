@@ -258,6 +258,17 @@ function createAdMarkup(slotId, variant = "card") {
   return `<div class="ad-frame ${config.frameClass} ${config.sizeClass}" style="--ad-mobile-width:${config.mobileWidth}px;--ad-mobile-height:${config.mobileHeight}px;--ad-tablet-width:${config.tabletWidth || config.mobileWidth}px;--ad-tablet-height:${config.tabletHeight || config.mobileHeight}px;${config.desktopWidth ? `--ad-desktop-width:${config.desktopWidth}px;` : ""}${config.desktopHeight ? `--ad-desktop-height:${config.desktopHeight}px;` : ""}"><ins class="adsbygoogle ${config.sizeClass}" style="${widthStyle}" data-ad-client="${ADSENSE_CLIENT_ID}" data-ad-slot="${slotId}" data-ad-format="horizontal" data-full-width-responsive="${responsiveValue}"></ins></div>`;
 }
 
+function clearAdPlacementState(container) {
+  if (!container) {
+    return;
+  }
+
+  delete container.dataset.currentAdSlot;
+  delete container.dataset.currentAdVariant;
+  delete container.dataset.currentControlledState;
+  delete container.dataset.placeholderVariant;
+}
+
 function initialiseAdContainer(container) {
   if (!container) {
     return;
@@ -276,6 +287,19 @@ function initialiseAdContainer(container) {
   }
 }
 
+function renderAdPlaceholder(container, variant = "card") {
+  if (!container) {
+    return;
+  }
+
+  if (container.dataset.placeholderVariant !== variant || !container.querySelector(".ad-placeholder")) {
+    const config = getAdVariantConfig(variant);
+    container.innerHTML = `<div class="ad-frame ${config.frameClass} ${config.sizeClass}"><div class="ad-placeholder" aria-hidden="true"></div></div>`;
+    clearAdPlacementState(container);
+    container.dataset.placeholderVariant = variant;
+  }
+}
+
 function renderAdPlacement(container, slotId, variant = "card") {
   if (!container || !slotId) {
     return;
@@ -289,6 +313,7 @@ function renderAdPlacement(container, slotId, variant = "card") {
 
   if (currentSlotId !== slotId || currentVariant !== variant || currentControlledState != nextControlledState || !existingAd) {
     container.innerHTML = createAdMarkup(slotId, variant);
+    clearAdPlacementState(container);
     container.dataset.currentAdSlot = slotId;
     container.dataset.currentAdVariant = variant;
     container.dataset.currentControlledState = nextControlledState;
@@ -301,9 +326,9 @@ function renderRoundAnnouncementAd(roundIndex) {
   renderAdPlacement(roundIntroAdSlot, AD_SLOTS.roundIntro[roundIndex], "card");
 }
 
-function renderGameplayAds(roundIndex) {
-  renderAdPlacement(topBannerAdSlot, AD_SLOTS.gameplayTop[roundIndex], "top");
-  renderAdPlacement(bottomBannerAdSlot, AD_SLOTS.gameplayBottom[roundIndex], "bottom");
+function renderGameplayAds() {
+  renderAdPlaceholder(topBannerAdSlot, "top");
+  renderAdPlaceholder(bottomBannerAdSlot, "bottom");
 }
 
 function renderEndOfRoundAd(roundIndex) {
@@ -437,7 +462,7 @@ function startRound(roundIndex) {
   currentRoundIndex = roundIndex;
   currentCard = 0;
   renderScreen(SCREEN.GAMEPLAY);
-  renderGameplayAds(roundIndex);
+  renderGameplayAds();
   renderCurrentCard();
 }
 
