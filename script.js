@@ -166,6 +166,11 @@ function renderScreen(screen) {
   gameSection.classList.toggle("hidden", screen !== SCREEN.GAMEPLAY);
   resultSection.classList.toggle("hidden", screen !== SCREEN.END);
   interstitialSection.classList.toggle("hidden", screen !== SCREEN.BETWEEN_ROUND_AD);
+  document.body.className = document.body.className
+    .split(/\s+/)
+    .filter((name) => name && !name.startsWith("screen-"))
+    .concat(`screen-${screen}`)
+    .join(" ");
 }
 
 function getPlayerName() {
