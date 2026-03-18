@@ -5,7 +5,7 @@ const LEADERBOARD_LIMIT = 8;
 const CARDS_PER_ROUND = 8;
 const DOUBLE_MONEY_MULTIPLIER = 2;
 const MIN_DOUBLE_PROFIT = 28;
-const HOME_HERO_IMAGE = "/flip-wizard/images/hero.png";
+const HOME_HERO_IMAGE = "images/hero.png";
 
 const SCREEN = {
   HOME: "home",
@@ -25,7 +25,7 @@ const ROUND_CONFIG = [
     variance: 0.13,
     gradeWeights: [0.17, 0.34, 0.31, 0.18],
     announcementText: "All records are original presses.\nGoldmine Record/Sleeve grading affects value.\nYour call: can you double your money on these records?",
-    imageSrc: "/flip-wizard/images/round-op-shop.png",
+    imageSrc: "images/round-op-shop.png",
   },
   {
     key: "round-two-sunday-market",
@@ -36,7 +36,7 @@ const ROUND_CONFIG = [
     variance: 0.14,
     gradeWeights: [0.2, 0.35, 0.29, 0.16],
     announcementText: "All records are original presses, but condition still rules the deal.\nGoldmine Record/Sleeve grades shape what buyers will pay.\nBack your eye only when the numbers can roughly double your money.",
-    imageSrc: "/flip-wizard/images/round-sunday-market.png",
+    imageSrc: "images/round-sunday-market.png",
   },
   {
     key: "round-three-garage-sale",
@@ -47,7 +47,7 @@ const ROUND_CONFIG = [
     variance: 0.15,
     gradeWeights: [0.22, 0.36, 0.27, 0.15],
     announcementText: "Original presses are on the table, but grading can kill value fast.\nWatch Goldmine Record/Sleeve condition closely before saying yes.\nChase records where resale can at least double your buy price.",
-    imageSrc: "/flip-wizard/images/round-yard-sale.png",
+    imageSrc: "images/round-yard-sale.png",
   },
   {
     key: "round-four-antique-shop",
@@ -58,7 +58,7 @@ const ROUND_CONFIG = [
     variance: 0.11,
     gradeWeights: [0.24, 0.37, 0.25, 0.14],
     announcementText: "These are still original presses, priced by confident sellers.\nGoldmine Record/Sleeve grades decide if margin survives.\nOnly strike when condition and demand can double your money.",
-    imageSrc: "/flip-wizard/images/round-antique-shop.png",
+    imageSrc: "images/round-antique-shop.png",
   },
   {
     key: "round-five-record-fair",
@@ -69,7 +69,7 @@ const ROUND_CONFIG = [
     variance: 0.1,
     gradeWeights: [0.24, 0.39, 0.24, 0.13],
     announcementText: "Final push: original presses with the tightest margins.\nGoldmine Record/Sleeve grading is the difference maker.\nFinal call: pick only records that can realistically double your money.",
-    imageSrc: "/flip-wizard/images/round-record-fair.png",
+    imageSrc: "images/round-record-fair.png",
   },
 ];
 
