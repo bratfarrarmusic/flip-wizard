@@ -17,6 +17,7 @@ const PRELOAD_IMAGE_PATHS = [
 
 const SCREEN = {
   HOME: "home",
+  HOW_TO_PLAY: "how_to_play",
   ROUND_ANNOUNCEMENT: "round_announcement",
   GAMEPLAY: "gameplay",
   BETWEEN_ROUND_AD: "between_round_ad",
@@ -120,6 +121,7 @@ const BASE_RECORD_POOL = [
 ];
 
 const introSection = document.getElementById("intro");
+const howToPlaySection = document.getElementById("howToPlay");
 const roundAnnouncementSection = document.getElementById("roundAnnouncement");
 const gameSection = document.getElementById("game");
 const resultSection = document.getElementById("result");
@@ -127,7 +129,10 @@ const interstitialSection = document.getElementById("betweenRoundInterstitial");
 
 const playerNameInput = document.getElementById("playerName");
 const marketSelect = document.getElementById("marketSelect");
+const homeNavBtn = document.getElementById("homeNavBtn");
+const howToPlayNavBtn = document.getElementById("howToPlayNavBtn");
 const startBtn = document.getElementById("startBtn");
+const howToPlayStartBtn = document.getElementById("howToPlayStartBtn");
 const startRoundBtn = document.getElementById("startRoundBtn");
 const yesBtn = document.getElementById("yesBtn");
 const noBtn = document.getElementById("noBtn");
@@ -197,12 +202,19 @@ function preloadImages() {
 preloadImages();
 homeHeroImage.src = HOME_HERO_IMAGE;
 
+function updateNavigation(screen) {
+  homeNavBtn.classList.toggle("is-active", screen === SCREEN.HOME);
+  howToPlayNavBtn.classList.toggle("is-active", screen === SCREEN.HOW_TO_PLAY);
+}
+
 function renderScreen(screen) {
   introSection.classList.toggle("hidden", screen !== SCREEN.HOME);
+  howToPlaySection.classList.toggle("hidden", screen !== SCREEN.HOW_TO_PLAY);
   roundAnnouncementSection.classList.toggle("hidden", screen !== SCREEN.ROUND_ANNOUNCEMENT);
   gameSection.classList.toggle("hidden", screen !== SCREEN.GAMEPLAY);
   resultSection.classList.toggle("hidden", screen !== SCREEN.END);
   interstitialSection.classList.toggle("hidden", screen !== SCREEN.BETWEEN_ROUND_AD);
+  updateNavigation(screen);
   document.body.className = document.body.className
     .split(/\s+/)
     .filter((name) => name && !name.startsWith("screen-"))
@@ -758,10 +770,22 @@ function resetRunState() {
   stopCountdown();
 }
 
+function showHomeScreen() {
+  clearPendingTransition();
+  stopCountdown();
+  renderScreen(SCREEN.HOME);
+}
+
+function showHowToPlayScreen() {
+  clearPendingTransition();
+  stopCountdown();
+  renderScreen(SCREEN.HOW_TO_PLAY);
+}
+
 function resetGame() {
   resetRunState();
   renderLeaderboards();
-  renderScreen(SCREEN.HOME);
+  showHomeScreen();
 }
 
 function clearPendingTransition() {
@@ -789,7 +813,10 @@ function setupHomeHeroFallback() {
   }
 }
 
+homeNavBtn.addEventListener("click", showHomeScreen);
+howToPlayNavBtn.addEventListener("click", showHowToPlayScreen);
 startBtn.addEventListener("click", startingNewGame);
+howToPlayStartBtn.addEventListener("click", showHomeScreen);
 startRoundBtn.addEventListener("click", beginAnnouncedRound);
 yesBtn.addEventListener("click", () => handleAnswer("Yes"));
 noBtn.addEventListener("click", () => handleAnswer("No"));
