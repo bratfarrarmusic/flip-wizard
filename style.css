@@ -80,28 +80,44 @@ p {
 .home-hero-overlay {
   position: absolute;
   inset: 0;
-  background: linear-gradient(180deg, rgba(3, 7, 18, 0.18) 0%, rgba(3, 7, 18, 0.34) 100%);
+  background: linear-gradient(180deg, rgba(3, 7, 18, 0.18) 0%, rgba(3, 7, 18, 0.4) 55%, rgba(3, 7, 18, 0.62) 100%);
   z-index: 1;
 }
 
+.home-hero-copy,
 .home-hero-fallback {
   position: absolute;
   inset: 0;
   display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 18px;
-  text-align: center;
+  align-items: flex-end;
+  justify-content: flex-start;
+  padding: 20px;
+  text-align: left;
   color: #fff;
   z-index: 2;
 }
 
+.home-hero-copy {
+  pointer-events: none;
+}
+
+.home-hero-fallback {
+  z-index: 0;
+  background: linear-gradient(135deg, #2f4858, #1f2937);
+}
+
 .hero-explainer {
   display: grid;
-  gap: 8px;
-  max-width: 32ch;
+  gap: 7px;
+  max-width: 30ch;
+  padding: 14px 16px;
+  border-radius: 16px;
+  background: rgba(3, 7, 18, 0.22);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  box-shadow: 0 18px 34px rgba(15, 23, 42, 0.16);
+  backdrop-filter: blur(2px);
   font-weight: 700;
-  line-height: 1.35;
+  line-height: 1.4;
 }
 
 .input-label {
@@ -221,8 +237,8 @@ p {
   right: 0;
   bottom: 0;
   color: #fff;
-  padding: 48px 16px 44px;
-  background: linear-gradient(180deg, rgba(3, 7, 18, 0) 0%, rgba(3, 7, 18, 0.82) 60%, rgba(3, 7, 18, 0.9) 100%);
+  padding: 64px 18px 46px;
+  background: linear-gradient(180deg, rgba(3, 7, 18, 0) 0%, rgba(3, 7, 18, 0.58) 42%, rgba(3, 7, 18, 0.88) 74%, rgba(3, 7, 18, 0.94) 100%);
 }
 
 .timer-tag {
@@ -240,18 +256,23 @@ p {
 
 .overlay-artist {
   font-weight: 800;
-  font-size: 1.05rem;
+  font-size: clamp(1.28rem, 4.7vw, 1.6rem);
+  line-height: 1.08;
+  text-wrap: balance;
 }
 
 .overlay-title {
-  margin-top: 2px;
-  font-size: 0.96rem;
+  margin-top: 5px;
+  font-size: clamp(1.12rem, 4.1vw, 1.36rem);
+  line-height: 1.16;
+  text-wrap: balance;
 }
 
 .overlay-detail {
-  margin-top: 4px;
-  font-size: 0.9rem;
-  opacity: 0.96;
+  margin-top: 7px;
+  font-size: clamp(1rem, 3.7vw, 1.14rem);
+  line-height: 1.2;
+  opacity: 0.98;
 }
 
 .corner-tag {
@@ -489,5 +510,16 @@ button:disabled {
 
   .card-overlay {
     padding: 42px 14px 40px;
+  }
+}
+
+@media (max-width: 420px) {
+  .hero-explainer {
+    max-width: 100%;
+    padding: 13px 14px;
+  }
+
+  .card-overlay {
+    padding: 58px 16px 44px;
   }
 }

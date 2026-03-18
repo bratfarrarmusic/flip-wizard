@@ -637,6 +637,10 @@ function shuffled(arr) {
 function setupHomeHeroFallback() {
   homeHeroImage.onload = () => homeHeroFallback.classList.add("hidden");
   homeHeroImage.onerror = () => homeHeroFallback.classList.remove("hidden");
+
+  if (homeHeroImage.complete && homeHeroImage.naturalWidth > 0) {
+    homeHeroFallback.classList.add("hidden");
+  }
 }
 
 startBtn.addEventListener("click", startingNewGame);
