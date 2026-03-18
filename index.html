@@ -8,13 +8,17 @@
   </head>
   <body>
     <main class="app-shell">
-      <h1>Flip Wizard</h1>
+      <h1 id="appTitle">Flip Wizard</h1>
 
       <section id="intro" class="panel intro-panel">
         <div id="homeHero" class="home-hero" role="img" aria-label="Flip Wizard game preview">
           <img id="homeHeroImage" class="home-hero-image" alt="Flip Wizard landing hero" src="" />
           <div id="homeHeroFallback" class="home-hero-fallback" aria-hidden="true">
-            <p>Dig crates. Trust your gut. Build your margin.</p>
+            <div class="hero-explainer">
+              <p>You are buying original press records in real-world style markets.</p>
+              <p>Each one uses Goldmine Record/Sleeve grading.</p>
+              <p>Call it only if you think you can double your money.</p>
+            </div>
           </div>
         </div>
 
@@ -42,10 +46,19 @@
       </section>
 
       <section id="roundAnnouncement" class="panel round-announcement hidden" aria-live="polite">
-        <p id="announcementEyebrow" class="eyebrow"></p>
-        <h2 id="announcementTitle"></h2>
-        <p id="announcementBody" class="announcement-body"></p>
-        <button id="startRoundBtn" class="primary-btn">Start Round</button>
+        <div class="round-announcement-content">
+          <p id="announcementEyebrow" class="eyebrow"></p>
+          <h2 id="announcementTitle"></h2>
+          <p id="announcementBody" class="announcement-body"></p>
+          <button id="startRoundBtn" class="primary-btn">Start Round</button>
+        </div>
+
+        <div class="ad-slot banner-slot round-intro-ad-slot" role="complementary" aria-label="Sponsored ad space">
+          <div class="ad-copy-wrap">
+            <span class="ad-chip">Sponsored</span>
+            <span class="ad-caption">Ad space</span>
+          </div>
+        </div>
       </section>
 
       <section id="game" class="panel hidden" aria-live="polite">
@@ -106,6 +119,14 @@
         </div>
 
         <button id="playAgainBtn" class="primary-btn">Play Again</button>
+
+        <div class="ad-slot large-ad-slot result-ad-slot" role="complementary" aria-label="Sponsored ad space">
+          <div class="ad-copy-wrap vertical">
+            <span class="ad-chip">Sponsored</span>
+            <span class="ad-caption">Ad space</span>
+            <span class="ad-note">Large placement reserved for end-of-run monetisation.</span>
+          </div>
+        </div>
       </section>
     </main>
 
