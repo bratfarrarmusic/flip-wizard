@@ -82,8 +82,8 @@ p {
   justify-content: center;
   padding: 18px;
   text-align: center;
-  background: linear-gradient(135deg, #e0e7ff, #dbeafe);
-  color: #1e3a8a;
+  background: linear-gradient(180deg, rgba(3, 7, 18, 0.2) 0%, rgba(3, 7, 18, 0.38) 100%);
+  color: #fff;
 }
 
 .hero-explainer {

@@ -5,7 +5,7 @@ const LEADERBOARD_LIMIT = 8;
 const CARDS_PER_ROUND = 8;
 const DOUBLE_MONEY_MULTIPLIER = 2;
 const MIN_DOUBLE_PROFIT = 28;
-const GENERIC_RECORD_IMAGE = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 600 600'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0%25' stop-color='%232f4858'/%3E%3Cstop offset='100%25' stop-color='%2333658a'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='600' height='600' fill='url(%23g)'/%3E%3Ccircle cx='300' cy='300' r='180' fill='none' stroke='rgba(255,255,255,0.36)' stroke-width='8'/%3E%3Ccircle cx='300' cy='300' r='28' fill='rgba(255,255,255,0.55)'/%3E%3C/svg%3E";
+const HOME_HERO_IMAGE = "/flip-wizard/images/hero.png";
 
 const SCREEN = {
   HOME: "home",
@@ -25,6 +25,7 @@ const ROUND_CONFIG = [
     variance: 0.13,
     gradeWeights: [0.17, 0.34, 0.31, 0.18],
     announcementText: "All records are original presses.\nGoldmine Record/Sleeve grading affects value.\nYour call: can you double your money on these records?",
+    imageSrc: "/flip-wizard/images/round-op-shop.png",
   },
   {
     key: "round-two-sunday-market",
@@ -35,6 +36,7 @@ const ROUND_CONFIG = [
     variance: 0.14,
     gradeWeights: [0.2, 0.35, 0.29, 0.16],
     announcementText: "All records are original presses, but condition still rules the deal.\nGoldmine Record/Sleeve grades shape what buyers will pay.\nBack your eye only when the numbers can roughly double your money.",
+    imageSrc: "/flip-wizard/images/round-sunday-market.png",
   },
   {
     key: "round-three-garage-sale",
@@ -45,6 +47,7 @@ const ROUND_CONFIG = [
     variance: 0.15,
     gradeWeights: [0.22, 0.36, 0.27, 0.15],
     announcementText: "Original presses are on the table, but grading can kill value fast.\nWatch Goldmine Record/Sleeve condition closely before saying yes.\nChase records where resale can at least double your buy price.",
+    imageSrc: "/flip-wizard/images/round-yard-sale.png",
   },
   {
     key: "round-four-antique-shop",
@@ -55,6 +58,7 @@ const ROUND_CONFIG = [
     variance: 0.11,
     gradeWeights: [0.24, 0.37, 0.25, 0.14],
     announcementText: "These are still original presses, priced by confident sellers.\nGoldmine Record/Sleeve grades decide if margin survives.\nOnly strike when condition and demand can double your money.",
+    imageSrc: "/flip-wizard/images/round-antique-shop.png",
   },
   {
     key: "round-five-record-fair",
@@ -65,6 +69,7 @@ const ROUND_CONFIG = [
     variance: 0.1,
     gradeWeights: [0.24, 0.39, 0.24, 0.13],
     announcementText: "Final push: original presses with the tightest margins.\nGoldmine Record/Sleeve grading is the difference maker.\nFinal call: pick only records that can realistically double your money.",
+    imageSrc: "/flip-wizard/images/round-record-fair.png",
   },
 ];
 
@@ -160,6 +165,8 @@ let score = 0;
 let totalProfit = 0;
 let streak = 0;
 
+homeHeroImage.src = HOME_HERO_IMAGE;
+
 function renderScreen(screen) {
   introSection.classList.toggle("hidden", screen !== SCREEN.HOME);
   roundAnnouncementSection.classList.toggle("hidden", screen !== SCREEN.ROUND_ANNOUNCEMENT);
@@ -203,7 +210,7 @@ function generatingCardsForRound(round, usedIds) {
     id: `${record[0]}__${record[1]}`,
     artist: record[0],
     title: record[1],
-    imageSrc: GENERIC_RECORD_IMAGE,
+    imageSrc: round.imageSrc,
     imageLabel: `${record[0]}\n${record[1]}`,
     eligibleRounds: ROUND_CONFIG.map((entry) => entry.key),
     baseMedianValue: Math.round(record[2] * ORIGINAL_PRESS_VALUE_BONUS),
