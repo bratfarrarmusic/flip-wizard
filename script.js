@@ -23,6 +23,14 @@ const SCREEN = {
   END: "end",
 };
 
+const ADSENSE_CLIENT_ID = "ca-pub-3839676134418957";
+const AD_SLOTS = {
+  roundIntro: ["9244967293", "8882138664", "5109713914", "1452740209", "6589516817"],
+  gameplayTop: ["8282538710", "9449114870", "8935644405", "1267239073", "5276435140"],
+  gameplayBottom: ["3030212035", "6777885356", "1739680669", "7745150966", "1337190136"],
+  endOfRound: ["9477035039", "3629811984", "9161340267", "2841843492", "7480592939"],
+};
+
 const ROUND_CONFIG = [
   {
     key: "round-one-op-shop",
@@ -158,8 +166,10 @@ const resultLeaderboard = document.getElementById("resultLeaderboard");
 const homeHeroImage = document.getElementById("homeHeroImage");
 const homeHeroFallback = document.getElementById("homeHeroFallback");
 const roundIntroAdSlot = document.getElementById("roundIntroAdSlot");
-
-let hasInitialisedRoundIntroAd = false;
+const topBannerAdSlot = document.getElementById("topBannerAdSlot");
+const bottomBannerAdSlot = document.getElementById("bottomBannerAdSlot");
+const interstitialAdSlot = document.getElementById("interstitialAdSlot");
+const resultAdSlot = document.getElementById("resultAdSlot");
 
 let rounds = [];
 let selectedMarket = "au";
@@ -200,23 +210,58 @@ function renderScreen(screen) {
     .join(" ");
 }
 
-function initialiseRoundIntroAd() {
-  if (hasInitialisedRoundIntroAd || !roundIntroAdSlot) {
+function createAdMarkup(slotId) {
+  return `<ins class="adsbygoogle" style="display:block" data-ad-client="${ADSENSE_CLIENT_ID}" data-ad-slot="${slotId}" data-ad-format="horizontal" data-full-width-responsive="true"></ins>`;
+}
+
+function initialiseAdContainer(container) {
+  if (!container) {
     return;
   }
 
-  const adElement = roundIntroAdSlot.querySelector(".adsbygoogle");
-  if (!adElement || adElement.dataset.adStatus) {
-    hasInitialisedRoundIntroAd = true;
+  const adElement = container.querySelector(".adsbygoogle");
+  if (!adElement || adElement.dataset.adStatus || adElement.dataset.initialised === "true") {
     return;
   }
 
   try {
     (window.adsbygoogle = window.adsbygoogle || []).push({});
-    hasInitialisedRoundIntroAd = true;
+    adElement.dataset.initialised = "true";
   } catch (error) {
-    console.warn("Round intro ad failed to initialise.", error);
+    console.warn("AdSense placement failed to initialise.", error);
   }
+}
+
+function renderAdPlacement(container, slotId) {
+  if (!container || !slotId) {
+    return;
+  }
+
+  const currentSlotId = container.dataset.currentAdSlot;
+  const existingAd = container.querySelector(".adsbygoogle");
+  if (currentSlotId !== slotId || !existingAd) {
+    container.innerHTML = createAdMarkup(slotId);
+    container.dataset.currentAdSlot = slotId;
+  }
+
+  initialiseAdContainer(container);
+}
+
+function renderRoundAnnouncementAd(roundIndex) {
+  renderAdPlacement(roundIntroAdSlot, AD_SLOTS.roundIntro[roundIndex]);
+}
+
+function renderGameplayAds(roundIndex) {
+  renderAdPlacement(topBannerAdSlot, AD_SLOTS.gameplayTop[roundIndex]);
+  renderAdPlacement(bottomBannerAdSlot, AD_SLOTS.gameplayBottom[roundIndex]);
+}
+
+function renderEndOfRoundAd(roundIndex) {
+  renderAdPlacement(interstitialAdSlot, AD_SLOTS.endOfRound[roundIndex]);
+}
+
+function renderFinalResultAd(roundIndex) {
+  renderAdPlacement(resultAdSlot, AD_SLOTS.endOfRound[roundIndex]);
 }
 
 function getPlayerName() {
@@ -331,7 +376,7 @@ function showRoundAnnouncement(roundIndex) {
   announcementTitle.textContent = round.title;
   announcementBody.textContent = round.announcementText;
   renderScreen(SCREEN.ROUND_ANNOUNCEMENT);
-  initialiseRoundIntroAd();
+  renderRoundAnnouncementAd(roundIndex);
 }
 
 function beginAnnouncedRound() {
@@ -342,6 +387,7 @@ function startRound(roundIndex) {
   currentRoundIndex = roundIndex;
   currentCard = 0;
   renderScreen(SCREEN.GAMEPLAY);
+  renderGameplayAds(roundIndex);
   renderCurrentCard();
 }
 
@@ -519,6 +565,7 @@ function renderingRoundEndProfitSummary(round) {
 
 function showingBetweenRoundAds(round) {
   renderingRoundEndProfitSummary(round);
+  renderEndOfRoundAd(currentRoundIndex);
   renderScreen(SCREEN.BETWEEN_ROUND_AD);
 }
 
@@ -552,6 +599,7 @@ function endingGame() {
   summary.textContent = endingText.summary;
 
   renderLeaderboards();
+  renderFinalResultAd(currentRoundIndex);
   renderScreen(SCREEN.END);
 }
 
