@@ -157,6 +157,9 @@ const resultLeaderboard = document.getElementById("resultLeaderboard");
 
 const homeHeroImage = document.getElementById("homeHeroImage");
 const homeHeroFallback = document.getElementById("homeHeroFallback");
+const roundIntroAdSlot = document.getElementById("roundIntroAdSlot");
+
+let hasInitialisedRoundIntroAd = false;
 
 let rounds = [];
 let selectedMarket = "au";
@@ -195,6 +198,25 @@ function renderScreen(screen) {
     .filter((name) => name && !name.startsWith("screen-"))
     .concat(`screen-${screen}`)
     .join(" ");
+}
+
+function initialiseRoundIntroAd() {
+  if (hasInitialisedRoundIntroAd || !roundIntroAdSlot) {
+    return;
+  }
+
+  const adElement = roundIntroAdSlot.querySelector(".adsbygoogle");
+  if (!adElement || adElement.dataset.adStatus) {
+    hasInitialisedRoundIntroAd = true;
+    return;
+  }
+
+  try {
+    (window.adsbygoogle = window.adsbygoogle || []).push({});
+    hasInitialisedRoundIntroAd = true;
+  } catch (error) {
+    console.warn("Round intro ad failed to initialise.", error);
+  }
 }
 
 function getPlayerName() {
@@ -309,6 +331,7 @@ function showRoundAnnouncement(roundIndex) {
   announcementTitle.textContent = round.title;
   announcementBody.textContent = round.announcementText;
   renderScreen(SCREEN.ROUND_ANNOUNCEMENT);
+  initialiseRoundIntroAd();
 }
 
 function beginAnnouncedRound() {
