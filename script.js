@@ -18,6 +18,7 @@ const PRELOAD_IMAGE_PATHS = [
 const SCREEN = {
   HOME: "home",
   HOW_TO_PLAY: "how_to_play",
+  RECORD_GRADING: "record_grading",
   ROUND_ANNOUNCEMENT: "round_announcement",
   GAMEPLAY: "gameplay",
   BETWEEN_ROUND_AD: "between_round_ad",
@@ -122,6 +123,7 @@ const BASE_RECORD_POOL = [
 
 const introSection = document.getElementById("intro");
 const howToPlaySection = document.getElementById("howToPlay");
+const recordGradingSection = document.getElementById("recordGrading");
 const roundAnnouncementSection = document.getElementById("roundAnnouncement");
 const gameSection = document.getElementById("game");
 const resultSection = document.getElementById("result");
@@ -131,8 +133,11 @@ const playerNameInput = document.getElementById("playerName");
 const marketSelect = document.getElementById("marketSelect");
 const homeNavBtn = document.getElementById("homeNavBtn");
 const howToPlayNavBtn = document.getElementById("howToPlayNavBtn");
+const recordGradingNavBtn = document.getElementById("recordGradingNavBtn");
 const startBtn = document.getElementById("startBtn");
 const howToPlayStartBtn = document.getElementById("howToPlayStartBtn");
+const recordGradingHomeLink = document.getElementById("recordGradingHomeLink");
+const recordGradingGameLink = document.getElementById("recordGradingGameLink");
 const startRoundBtn = document.getElementById("startRoundBtn");
 const yesBtn = document.getElementById("yesBtn");
 const noBtn = document.getElementById("noBtn");
@@ -205,11 +210,23 @@ homeHeroImage.src = HOME_HERO_IMAGE;
 function updateNavigation(screen) {
   homeNavBtn.classList.toggle("is-active", screen === SCREEN.HOME);
   howToPlayNavBtn.classList.toggle("is-active", screen === SCREEN.HOW_TO_PLAY);
+  recordGradingNavBtn.classList.toggle("is-active", screen === SCREEN.RECORD_GRADING);
 }
 
 function renderScreen(screen) {
+  if (screen === SCREEN.HOME) {
+    document.title = "Flip Wizard";
+  } else if (screen === SCREEN.HOW_TO_PLAY) {
+    document.title = "How to Play | Flip Wizard";
+  } else if (screen === SCREEN.RECORD_GRADING) {
+    document.title = "Record Grading Explained | Flip Wizard";
+  } else {
+    document.title = "Flip Wizard";
+  }
+
   introSection.classList.toggle("hidden", screen !== SCREEN.HOME);
   howToPlaySection.classList.toggle("hidden", screen !== SCREEN.HOW_TO_PLAY);
+  recordGradingSection.classList.toggle("hidden", screen !== SCREEN.RECORD_GRADING);
   roundAnnouncementSection.classList.toggle("hidden", screen !== SCREEN.ROUND_ANNOUNCEMENT);
   gameSection.classList.toggle("hidden", screen !== SCREEN.GAMEPLAY);
   resultSection.classList.toggle("hidden", screen !== SCREEN.END);
@@ -773,13 +790,22 @@ function resetRunState() {
 function showHomeScreen() {
   clearPendingTransition();
   stopCountdown();
+  document.title = "Flip Wizard";
   renderScreen(SCREEN.HOME);
 }
 
 function showHowToPlayScreen() {
   clearPendingTransition();
   stopCountdown();
+  document.title = "How to Play | Flip Wizard";
   renderScreen(SCREEN.HOW_TO_PLAY);
+}
+
+function showRecordGradingScreen() {
+  clearPendingTransition();
+  stopCountdown();
+  document.title = "Record Grading Explained | Flip Wizard";
+  renderScreen(SCREEN.RECORD_GRADING);
 }
 
 function resetGame() {
@@ -815,8 +841,17 @@ function setupHomeHeroFallback() {
 
 homeNavBtn.addEventListener("click", showHomeScreen);
 howToPlayNavBtn.addEventListener("click", showHowToPlayScreen);
+recordGradingNavBtn.addEventListener("click", showRecordGradingScreen);
 startBtn.addEventListener("click", startingNewGame);
 howToPlayStartBtn.addEventListener("click", showHomeScreen);
+recordGradingHomeLink.addEventListener("click", (event) => {
+  event.preventDefault();
+  showHomeScreen();
+});
+recordGradingGameLink.addEventListener("click", (event) => {
+  event.preventDefault();
+  showHomeScreen();
+});
 startRoundBtn.addEventListener("click", beginAnnouncedRound);
 yesBtn.addEventListener("click", () => handleAnswer("Yes"));
 noBtn.addEventListener("click", () => handleAnswer("No"));
