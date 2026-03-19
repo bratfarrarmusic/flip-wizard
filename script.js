@@ -19,6 +19,9 @@ const SCREEN = {
   HOME: "home",
   HOW_TO_PLAY: "how_to_play",
   RECORD_GRADING: "record_grading",
+  WORTH_BUYING: "worth_buying",
+  OLD_RECORDS_VALUABLE: "old_records_valuable",
+  TOP_COLLECTABLE_RECORDS: "top_collectable_records",
   ROUND_ANNOUNCEMENT: "round_announcement",
   GAMEPLAY: "gameplay",
   BETWEEN_ROUND_AD: "between_round_ad",
@@ -124,6 +127,9 @@ const BASE_RECORD_POOL = [
 const introSection = document.getElementById("intro");
 const howToPlaySection = document.getElementById("howToPlay");
 const recordGradingSection = document.getElementById("recordGrading");
+const worthBuyingSection = document.getElementById("worthBuying");
+const oldRecordsValuableSection = document.getElementById("oldRecordsValuable");
+const topCollectableRecordsSection = document.getElementById("topCollectableRecords");
 const roundAnnouncementSection = document.getElementById("roundAnnouncement");
 const gameSection = document.getElementById("game");
 const resultSection = document.getElementById("result");
@@ -135,9 +141,23 @@ const homeNavBtn = document.getElementById("homeNavBtn");
 const howToPlayNavBtn = document.getElementById("howToPlayNavBtn");
 const recordGradingNavBtn = document.getElementById("recordGradingNavBtn");
 const startBtn = document.getElementById("startBtn");
+const worthBuyingBtn = document.getElementById("worthBuyingBtn");
+const oldRecordsBtn = document.getElementById("oldRecordsBtn");
+const topCollectableBtn = document.getElementById("topCollectableBtn");
 const howToPlayStartBtn = document.getElementById("howToPlayStartBtn");
 const recordGradingHomeLink = document.getElementById("recordGradingHomeLink");
 const recordGradingGameLink = document.getElementById("recordGradingGameLink");
+const worthBuyingHomeLink = document.getElementById("worthBuyingHomeLink");
+const worthBuyingGameLink = document.getElementById("worthBuyingGameLink");
+const worthBuyingRecordGradingLink = document.getElementById("worthBuyingRecordGradingLink");
+const oldRecordsHomeLink = document.getElementById("oldRecordsHomeLink");
+const oldRecordsGameLink = document.getElementById("oldRecordsGameLink");
+const oldRecordsRecordGradingLink = document.getElementById("oldRecordsRecordGradingLink");
+const topCollectableHomeLink = document.getElementById("topCollectableHomeLink");
+const topCollectableGameLink = document.getElementById("topCollectableGameLink");
+const topCollectableRecordGradingLink = document.getElementById("topCollectableRecordGradingLink");
+const topCollectableWorthBuyingLink = document.getElementById("topCollectableWorthBuyingLink");
+const topCollectableOldRecordsLink = document.getElementById("topCollectableOldRecordsLink");
 const startRoundBtn = document.getElementById("startRoundBtn");
 const yesBtn = document.getElementById("yesBtn");
 const noBtn = document.getElementById("noBtn");
@@ -220,6 +240,12 @@ function renderScreen(screen) {
     document.title = "How to Play | Flip Wizard";
   } else if (screen === SCREEN.RECORD_GRADING) {
     document.title = "Record Grading Explained | Flip Wizard";
+  } else if (screen === SCREEN.WORTH_BUYING) {
+    document.title = "How to Tell if a Record Is Worth Buying | Flip Wizard";
+  } else if (screen === SCREEN.OLD_RECORDS_VALUABLE) {
+    document.title = "Are Old Records Valuable? | Flip Wizard";
+  } else if (screen === SCREEN.TOP_COLLECTABLE_RECORDS) {
+    document.title = "Top 100 Most Collectable Records | Flip Wizard";
   } else {
     document.title = "Flip Wizard";
   }
@@ -227,6 +253,9 @@ function renderScreen(screen) {
   introSection.classList.toggle("hidden", screen !== SCREEN.HOME);
   howToPlaySection.classList.toggle("hidden", screen !== SCREEN.HOW_TO_PLAY);
   recordGradingSection.classList.toggle("hidden", screen !== SCREEN.RECORD_GRADING);
+  worthBuyingSection.classList.toggle("hidden", screen !== SCREEN.WORTH_BUYING);
+  oldRecordsValuableSection.classList.toggle("hidden", screen !== SCREEN.OLD_RECORDS_VALUABLE);
+  topCollectableRecordsSection.classList.toggle("hidden", screen !== SCREEN.TOP_COLLECTABLE_RECORDS);
   roundAnnouncementSection.classList.toggle("hidden", screen !== SCREEN.ROUND_ANNOUNCEMENT);
   gameSection.classList.toggle("hidden", screen !== SCREEN.GAMEPLAY);
   resultSection.classList.toggle("hidden", screen !== SCREEN.END);
@@ -808,6 +837,27 @@ function showRecordGradingScreen() {
   renderScreen(SCREEN.RECORD_GRADING);
 }
 
+function showWorthBuyingScreen() {
+  clearPendingTransition();
+  stopCountdown();
+  document.title = "How to Tell if a Record Is Worth Buying | Flip Wizard";
+  renderScreen(SCREEN.WORTH_BUYING);
+}
+
+function showOldRecordsValuableScreen() {
+  clearPendingTransition();
+  stopCountdown();
+  document.title = "Are Old Records Valuable? | Flip Wizard";
+  renderScreen(SCREEN.OLD_RECORDS_VALUABLE);
+}
+
+function showTopCollectableRecordsScreen() {
+  clearPendingTransition();
+  stopCountdown();
+  document.title = "Top 100 Most Collectable Records | Flip Wizard";
+  renderScreen(SCREEN.TOP_COLLECTABLE_RECORDS);
+}
+
 function resetGame() {
   resetRunState();
   renderLeaderboards();
@@ -842,6 +892,9 @@ function setupHomeHeroFallback() {
 homeNavBtn.addEventListener("click", showHomeScreen);
 howToPlayNavBtn.addEventListener("click", showHowToPlayScreen);
 recordGradingNavBtn.addEventListener("click", showRecordGradingScreen);
+worthBuyingBtn.addEventListener("click", showWorthBuyingScreen);
+oldRecordsBtn.addEventListener("click", showOldRecordsValuableScreen);
+topCollectableBtn.addEventListener("click", showTopCollectableRecordsScreen);
 startBtn.addEventListener("click", startingNewGame);
 howToPlayStartBtn.addEventListener("click", showHomeScreen);
 recordGradingHomeLink.addEventListener("click", (event) => {
@@ -851,6 +904,50 @@ recordGradingHomeLink.addEventListener("click", (event) => {
 recordGradingGameLink.addEventListener("click", (event) => {
   event.preventDefault();
   showHomeScreen();
+});
+worthBuyingHomeLink.addEventListener("click", (event) => {
+  event.preventDefault();
+  showHomeScreen();
+});
+worthBuyingGameLink.addEventListener("click", (event) => {
+  event.preventDefault();
+  showHomeScreen();
+});
+worthBuyingRecordGradingLink.addEventListener("click", (event) => {
+  event.preventDefault();
+  showRecordGradingScreen();
+});
+oldRecordsHomeLink.addEventListener("click", (event) => {
+  event.preventDefault();
+  showHomeScreen();
+});
+oldRecordsGameLink.addEventListener("click", (event) => {
+  event.preventDefault();
+  showHomeScreen();
+});
+oldRecordsRecordGradingLink.addEventListener("click", (event) => {
+  event.preventDefault();
+  showRecordGradingScreen();
+});
+topCollectableHomeLink.addEventListener("click", (event) => {
+  event.preventDefault();
+  showHomeScreen();
+});
+topCollectableGameLink.addEventListener("click", (event) => {
+  event.preventDefault();
+  showHomeScreen();
+});
+topCollectableRecordGradingLink.addEventListener("click", (event) => {
+  event.preventDefault();
+  showRecordGradingScreen();
+});
+topCollectableWorthBuyingLink.addEventListener("click", (event) => {
+  event.preventDefault();
+  showWorthBuyingScreen();
+});
+topCollectableOldRecordsLink.addEventListener("click", (event) => {
+  event.preventDefault();
+  showOldRecordsValuableScreen();
 });
 startRoundBtn.addEventListener("click", beginAnnouncedRound);
 yesBtn.addEventListener("click", () => handleAnswer("Yes"));
