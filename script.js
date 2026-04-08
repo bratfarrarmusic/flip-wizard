@@ -1,5 +1,6 @@
 const ROUND_SECONDS = 9;
 const NEXT_CARD_DELAY_MS = 350;
+const FINAL_ROUND_AD_FALLBACK_TIMEOUT_MS = 2000;
 const LEADERBOARD_KEY = "flipWizardLeaderboardV5";
 const LEADERBOARD_LIMIT = 8;
 const CARDS_PER_ROUND = 8;
@@ -199,11 +200,13 @@ let timerInterval = null;
 let cardStartedAt = 0;
 let timeRemaining = ROUND_SECONDS;
 let pendingTransitionTimeout = null;
+let finalRoundAdFallbackTimeout = null;
 let playerName = "Anonymous";
 let score = 0;
 let totalProfit = 0;
 let streak = 0;
 let adConfigInitialised = false;
+let hasCompletedRoundFiveTransition = false;
 
 function preloadImages() {
   PRELOAD_IMAGE_PATHS.forEach((src) => {
@@ -628,6 +631,25 @@ function continueAfterInterstitial() {
   showRoundAnnouncement(currentRoundIndex + 1);
 }
 
+function clearFinalRoundAdFallbackTimeout() {
+  if (finalRoundAdFallbackTimeout) {
+    clearTimeout(finalRoundAdFallbackTimeout);
+    finalRoundAdFallbackTimeout = null;
+  }
+}
+
+function goToFinalScoreScreen() {
+  if (hasCompletedRoundFiveTransition) {
+    return;
+  }
+
+  hasCompletedRoundFiveTransition = true;
+  clearFinalRoundAdFallbackTimeout();
+  console.log("[Round 5] Showing final score screen");
+  renderLeaderboards();
+  renderScreen(SCREEN.END);
+}
+
 function endingGame() {
   stopCountdown();
   const safeScore = Math.max(0, Math.round(score));
@@ -643,20 +665,41 @@ function endingGame() {
   rating.textContent = endingText.rating;
   summary.textContent = endingText.summary;
 
-  const showEndScreen = () => {
-    renderLeaderboards();
-    renderScreen(SCREEN.END);
+  console.log("[Round 5] Completion reached");
+  const safeFinish = () => {
+    resumeAfterAdBreak();
+    goToFinalScoreScreen();
   };
 
-  runAdBreak({
-    type: "next",
-    name: H5_AD_BREAK_NAMES[H5_AD_BREAK_NAMES.length - 1],
-    beforeAd: pauseForAdBreak,
-    afterAd: () => {
-      resumeAfterAdBreak();
-      showEndScreen();
-    },
-  });
+  if (typeof window.adBreak !== "function") {
+    safeFinish();
+    return;
+  }
+
+  try {
+    console.log("[Round 5] Calling adBreak before final score");
+    clearFinalRoundAdFallbackTimeout();
+    finalRoundAdFallbackTimeout = window.setTimeout(() => {
+      console.warn("[Round 5] adBreak fallback timeout fired");
+      safeFinish();
+    }, FINAL_ROUND_AD_FALLBACK_TIMEOUT_MS);
+
+    window.adBreak({
+      type: "next",
+      name: H5_AD_BREAK_NAMES[H5_AD_BREAK_NAMES.length - 1],
+      beforeAd: pauseForAdBreak,
+      adBreakDone: () => {
+        console.log("[Round 5] adBreakDone received");
+        clearFinalRoundAdFallbackTimeout();
+        safeFinish();
+      },
+      afterAd: resumeAfterAdBreak,
+    });
+  } catch (error) {
+    console.warn("[Round 5] adBreak error, finishing without ad", error);
+    clearFinalRoundAdFallbackTimeout();
+    safeFinish();
+  }
 }
 
 function performanceMessage(finalScoreValue, finalProfitValue) {
@@ -734,6 +777,7 @@ function resetRunState() {
   totalProfit = 0;
   streak = 0;
   timeRemaining = ROUND_SECONDS;
+  hasCompletedRoundFiveTransition = false;
   updatingTimerBadge();
   clearPendingTransition();
   stopCountdown();
@@ -792,6 +836,7 @@ function clearPendingTransition() {
     clearTimeout(pendingTransitionTimeout);
     pendingTransitionTimeout = null;
   }
+  clearFinalRoundAdFallbackTimeout();
 }
 
 function shuffled(arr) {
