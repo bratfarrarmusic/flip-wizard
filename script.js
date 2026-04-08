@@ -28,13 +28,7 @@ const SCREEN = {
   END: "end",
 };
 
-const ADSENSE_CLIENT_ID = "ca-pub-3839676134418957";
-const AD_SLOTS = {
-  roundIntro: ["9244967293", "8882138664", "5109713914", "1452740209", "6589516817"],
-  gameplayTop: ["8282538710", "9449114870", "8935644405", "1267239073", "5276435140"],
-  gameplayBottom: ["3030212035", "6777885356", "1739680669", "7745150966", "1337190136"],
-  endOfRound: ["9477035039", "3629811984", "9161340267", "2841843492", "7480592939"],
-};
+const H5_AD_BREAK_NAMES = ["round-1-complete", "round-2-complete", "round-3-complete", "round-4-complete", "run-complete"];
 
 const ROUND_CONFIG = [
   {
@@ -195,12 +189,6 @@ const resultLeaderboard = document.getElementById("resultLeaderboard");
 
 const homeHeroImage = document.getElementById("homeHeroImage");
 const homeHeroFallback = document.getElementById("homeHeroFallback");
-const roundIntroAdSlot = document.getElementById("roundIntroAdSlot");
-const topBannerAdSlot = document.getElementById("topBannerAdSlot");
-const bottomBannerAdSlot = document.getElementById("bottomBannerAdSlot");
-const interstitialAdSlot = document.getElementById("interstitialAdSlot");
-const resultAdSlot = document.getElementById("resultAdSlot");
-
 let rounds = [];
 let selectedMarket = "au";
 let currentRoundIndex = 0;
@@ -215,6 +203,7 @@ let playerName = "Anonymous";
 let score = 0;
 let totalProfit = 0;
 let streak = 0;
+let adConfigInitialised = false;
 
 function preloadImages() {
   PRELOAD_IMAGE_PATHS.forEach((src) => {
@@ -268,133 +257,52 @@ function renderScreen(screen) {
     .join(" ");
 }
 
-const AD_VARIANTS = {
-  top: {
-    frameClass: "ad-frame-top",
-    sizeClass: "ad-size-gameplay-top",
-    mobileWidth: 320,
-    mobileHeight: 50,
-    tabletWidth: 468,
-    tabletHeight: 60
-  },
-  bottom: {
-    frameClass: "ad-frame-bottom",
-    sizeClass: "ad-size-gameplay-bottom",
-    mobileWidth: 320,
-    mobileHeight: 50,
-    tabletWidth: 468,
-    tabletHeight: 60
-  },
-  card: {
-    frameClass: "ad-frame-card",
-    sizeClass: "ad-size-card",
-    mobileWidth: 320,
-    mobileHeight: 100,
-    tabletWidth: 468,
-    tabletHeight: 60
-  }
-};
-
-function getAdVariantConfig(variant = "card") {
-  return AD_VARIANTS[variant] || AD_VARIANTS.card;
+function hasSoundEnabled() {
+  return false;
 }
 
-function getAdInlineStyle() {
-  return "display:block;width:var(--ad-width);height:var(--ad-height)";
-}
-
-function shouldControlAdSize(config) {
-  return window.matchMedia("(max-width: 1024px)").matches || Boolean(config.desktopWidth && config.desktopHeight);
-}
-
-function createAdMarkup(slotId, variant = "card") {
-  const config = getAdVariantConfig(variant);
-  const controlledSize = shouldControlAdSize(config);
-  const widthStyle = getAdInlineStyle();
-  const responsiveValue = controlledSize ? "false" : "true";
-
-  return `<div class="ad-frame ${config.frameClass} ${config.sizeClass}" style="--ad-mobile-width:${config.mobileWidth}px;--ad-mobile-height:${config.mobileHeight}px;--ad-tablet-width:${config.tabletWidth || config.mobileWidth}px;--ad-tablet-height:${config.tabletHeight || config.mobileHeight}px;${config.desktopWidth ? `--ad-desktop-width:${config.desktopWidth}px;` : ""}${config.desktopHeight ? `--ad-desktop-height:${config.desktopHeight}px;` : ""}"><ins class="adsbygoogle ${config.sizeClass}" style="${widthStyle}" data-ad-client="${ADSENSE_CLIENT_ID}" data-ad-slot="${slotId}" data-ad-format="horizontal" data-full-width-responsive="${responsiveValue}"></ins></div>`;
-}
-
-function clearAdPlacementState(container) {
-  if (!container) {
+function initialiseH5GamesAdsConfig() {
+  if (adConfigInitialised || typeof window.adConfig !== "function") {
     return;
   }
 
-  delete container.dataset.currentAdSlot;
-  delete container.dataset.currentAdVariant;
-  delete container.dataset.currentControlledState;
-  delete container.dataset.placeholderVariant;
+  window.adConfig({
+    preloadAdBreaks: "auto",
+    sound: hasSoundEnabled() ? "on" : "off",
+  });
+  adConfigInitialised = true;
 }
 
-function initialiseAdContainer(container) {
-  if (!container) {
+function runAdBreak({ name, type = "next", beforeAd, afterAd }) {
+  const safeBeforeAd = typeof beforeAd === "function" ? beforeAd : () => {};
+  const safeAfterAd = typeof afterAd === "function" ? afterAd : () => {};
+
+  if (typeof window.adBreak !== "function") {
+    safeBeforeAd();
+    safeAfterAd();
     return;
   }
 
-  const adElement = container.querySelector(".adsbygoogle");
-  if (!adElement || adElement.dataset.adStatus || adElement.dataset.initialised === "true") {
-    return;
-  }
-
-  try {
-    (window.adsbygoogle = window.adsbygoogle || []).push({});
-    adElement.dataset.initialised = "true";
-  } catch (error) {
-    console.warn("AdSense placement failed to initialise.", error);
-  }
+  window.adBreak({
+    type,
+    name,
+    beforeAd: safeBeforeAd,
+    afterAd: safeAfterAd,
+  });
 }
 
-function renderAdPlaceholder(container, variant = "card") {
-  if (!container) {
-    return;
-  }
-
-  if (container.dataset.placeholderVariant !== variant || !container.querySelector(".ad-placeholder")) {
-    const config = getAdVariantConfig(variant);
-    container.innerHTML = `<div class="ad-frame ${config.frameClass} ${config.sizeClass}"><div class="ad-placeholder" aria-hidden="true"></div></div>`;
-    clearAdPlacementState(container);
-    container.dataset.placeholderVariant = variant;
-  }
+function pauseForAdBreak() {
+  clearPendingTransition();
+  stopCountdown();
+  answerLocked = true;
+  yesBtn.disabled = true;
+  noBtn.disabled = true;
 }
 
-function renderAdPlacement(container, slotId, variant = "card") {
-  if (!container || !slotId) {
-    return;
-  }
-
-  const currentSlotId = container.dataset.currentAdSlot;
-  const currentVariant = container.dataset.currentAdVariant;
-  const currentControlledState = container.dataset.currentControlledState;
-  const nextControlledState = String(shouldControlAdSize(getAdVariantConfig(variant)));
-  const existingAd = container.querySelector(".adsbygoogle");
-
-  if (currentSlotId !== slotId || currentVariant !== variant || currentControlledState != nextControlledState || !existingAd) {
-    container.innerHTML = createAdMarkup(slotId, variant);
-    clearAdPlacementState(container);
-    container.dataset.currentAdSlot = slotId;
-    container.dataset.currentAdVariant = variant;
-    container.dataset.currentControlledState = nextControlledState;
-  }
-
-  initialiseAdContainer(container);
-}
-
-function renderRoundAnnouncementAd(roundIndex) {
-  renderAdPlacement(roundIntroAdSlot, AD_SLOTS.roundIntro[roundIndex], "card");
-}
-
-function renderGameplayAds() {
-  renderAdPlaceholder(topBannerAdSlot, "top");
-  renderAdPlaceholder(bottomBannerAdSlot, "bottom");
-}
-
-function renderEndOfRoundAd(roundIndex) {
-  renderAdPlacement(interstitialAdSlot, AD_SLOTS.endOfRound[roundIndex], "card");
-}
-
-function renderFinalResultAd(roundIndex) {
-  renderAdPlacement(resultAdSlot, AD_SLOTS.endOfRound[roundIndex], "card");
+function resumeAfterAdBreak() {
+  answerLocked = false;
+  yesBtn.disabled = false;
+  noBtn.disabled = false;
 }
 
 function getPlayerName() {
@@ -509,7 +417,6 @@ function showRoundAnnouncement(roundIndex) {
   announcementTitle.textContent = round.title;
   announcementBody.textContent = round.announcementText;
   renderScreen(SCREEN.ROUND_ANNOUNCEMENT);
-  renderRoundAnnouncementAd(roundIndex);
 }
 
 function beginAnnouncedRound() {
@@ -520,7 +427,6 @@ function startRound(roundIndex) {
   currentRoundIndex = roundIndex;
   currentCard = 0;
   renderScreen(SCREEN.GAMEPLAY);
-  renderGameplayAds();
   renderCurrentCard();
 }
 
@@ -698,8 +604,14 @@ function renderingRoundEndProfitSummary(round) {
 
 function showingBetweenRoundAds(round) {
   renderingRoundEndProfitSummary(round);
-  renderEndOfRoundAd(currentRoundIndex);
   renderScreen(SCREEN.BETWEEN_ROUND_AD);
+
+  runAdBreak({
+    type: "next",
+    name: H5_AD_BREAK_NAMES[currentRoundIndex] || `round-${currentRoundIndex + 1}-complete`,
+    beforeAd: pauseForAdBreak,
+    afterAd: resumeAfterAdBreak,
+  });
 }
 
 function advancingRounds() {
@@ -731,9 +643,20 @@ function endingGame() {
   rating.textContent = endingText.rating;
   summary.textContent = endingText.summary;
 
-  renderLeaderboards();
-  renderFinalResultAd(currentRoundIndex);
-  renderScreen(SCREEN.END);
+  const showEndScreen = () => {
+    renderLeaderboards();
+    renderScreen(SCREEN.END);
+  };
+
+  runAdBreak({
+    type: "next",
+    name: H5_AD_BREAK_NAMES[H5_AD_BREAK_NAMES.length - 1],
+    beforeAd: pauseForAdBreak,
+    afterAd: () => {
+      resumeAfterAdBreak();
+      showEndScreen();
+    },
+  });
 }
 
 function performanceMessage(finalScoreValue, finalProfitValue) {
@@ -957,26 +880,6 @@ playAgainBtn.addEventListener("click", resetGame);
 clearLeaderboardBtn.addEventListener("click", clearLeaderboard);
 
 setupHomeHeroFallback();
+initialiseH5GamesAdsConfig();
 renderScreen(SCREEN.HOME);
 renderLeaderboards();
-
-
-window.addEventListener("resize", () => {
-  const activeRoundIndex = Math.max(0, currentRoundIndex - 1);
-
-  if (!gameSection.classList.contains("hidden") && AD_SLOTS.gameplayTop[activeRoundIndex] && AD_SLOTS.gameplayBottom[activeRoundIndex]) {
-    renderGameplayAds(activeRoundIndex);
-  }
-
-  if (!roundAnnouncementSection.classList.contains("hidden") && AD_SLOTS.roundIntro[activeRoundIndex]) {
-    renderRoundAnnouncementAd(activeRoundIndex);
-  }
-
-  if (!interstitialSection.classList.contains("hidden") && AD_SLOTS.endOfRound[activeRoundIndex]) {
-    renderEndOfRoundAd(activeRoundIndex);
-  }
-
-  if (!resultSection.classList.contains("hidden") && AD_SLOTS.endOfRound[activeRoundIndex]) {
-    renderFinalResultAd(activeRoundIndex);
-  }
-});
